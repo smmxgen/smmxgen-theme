@@ -1,0 +1,1424 @@
+<style>
+/* ==========================================
+   SMMXGEN SIDEBAR PROFILE
+   ========================================== */
+
+:root {
+  --sx-gold: #e3b96c;
+  --sx-gold-border: rgba(215,170,93,.22);
+}
+
+/* Sidebar layout */
+.component-sidebar.component-sidebar-with-navbar {
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.component-sidebar__menu {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Actual navigation list */
+.component-sidebar__menu > ul.sidebar-block__left-menu {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding-bottom: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Hide scrollbar but retain scrolling */
+.component-sidebar,
+.component-sidebar *,
+.component-sidebar__menu,
+ul.sidebar-block__left-menu {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.component-sidebar::-webkit-scrollbar,
+.component-sidebar *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Profile footer at the very bottom */
+#smmxgen-profile-footer-v3 {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-height: 68px !important;
+  margin: auto 0 0 !important;
+  padding: 10px 9px !important;
+  box-sizing: border-box !important;
+  background: #080808 !important;
+  border-top: 1px solid var(--sx-gold-border) !important;
+  z-index: 10;
+}
+
+#smmxgen-profile-footer-v3 .sx-profile-main {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+  padding: 6px !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  text-decoration: none !important;
+  background: transparent !important;
+  transition: background .2s, border-color .2s;
+}
+
+#smmxgen-profile-footer-v3 .sx-profile-main:hover {
+  background: rgba(215,170,93,.065) !important;
+  border-color: var(--sx-gold-border) !important;
+}
+
+/* User icon */
+#smmxgen-profile-footer-v3 .sx-profile-avatar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 39px !important;
+  height: 39px !important;
+  min-width: 39px !important;
+  flex: 0 0 39px !important;
+  color: var(--sx-gold) !important;
+  background: linear-gradient(145deg,#272116,#12110e) !important;
+  border: 1px solid rgba(215,170,93,.3) !important;
+  border-radius: 12px !important;
+}
+
+#smmxgen-profile-footer-v3 .sx-profile-avatar svg {
+  display: block;
+  width: 21px;
+  height: 21px;
+}
+
+/* Username and label */
+#smmxgen-profile-footer-v3 .sx-profile-info {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+}
+
+#smmxgen-profile-footer-v3 .sx-profile-name {
+  display: block !important;
+  max-width: 100%;
+  color: #f5f1e8 !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#smmxgen-profile-footer-v3 .sx-profile-label {
+  color: #99938a !important;
+  font-size: 10px !important;
+  line-height: 1.3 !important;
+}
+
+/* Logout icon only */
+#smmxgen-profile-footer-v3 .sx-profile-logout {
+  display: flex !important;
+  flex: 0 0 36px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  color: #aaa49a !important;
+  background: #171613 !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 10px !important;
+  text-decoration: none !important;
+}
+
+#smmxgen-profile-footer-v3 .sx-profile-logout svg {
+  width: 17px;
+  height: 17px;
+}
+
+#smmxgen-profile-footer-v3 .sx-profile-logout:hover {
+  color: #f0aaa0 !important;
+  background: rgba(230,120,110,.09) !important;
+  border-color: rgba(230,120,110,.35) !important;
+}
+
+/* Hide Account and Logout in the top navigation */
+.navbar a[href="/account"],
+.navbar a[href="/logout"],
+.header a[href="/account"],
+.header a[href="/logout"],
+.component-navbar a[href="/account"],
+.component-navbar a[href="/logout"] {
+  display: none !important;
+}
+
+#smmxgen-profile-footer-v3 a:focus-visible {
+  outline: 2px solid var(--sx-gold);
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  #smmxgen-profile-footer-v3 {
+    padding: 9px 7px !important;
+  }
+}
+</style>
+
+<script>
+(() => {
+  'use strict';
+
+  const SIDEBAR =
+    '.component-sidebar.component-sidebar-with-navbar';
+
+  const PROFILE_ID = 'smmxgen-profile-footer-v3';
+
+  const userIcon = `
+    <svg viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="1.7"
+      stroke-linecap="round" stroke-linejoin="round"
+      aria-hidden="true">
+      <circle cx="12" cy="8" r="3.5"/>
+      <path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/>
+    </svg>`;
+
+  const logoutIcon = `
+    <svg viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="1.7"
+      stroke-linecap="round" stroke-linejoin="round"
+      aria-hidden="true">
+      <path d="M10 17l5-5-5-5"/>
+      <path d="M15 12H3"/>
+      <path d="M12 3h6a2 2 0 0 1 2 2v14
+        a2 2 0 0 1-2 2h-6"/>
+    </svg>`;
+
+  function getPath(link) {
+    try {
+      return new URL(link.href, location.origin)
+        .pathname.replace(/\/+$/, '') || '/';
+    } catch {
+      return '';
+    }
+  }
+
+  function validUsername(value) {
+    if (!value) return '';
+
+    const username = value.trim();
+
+    if (
+      !username ||
+      username.length > 80 ||
+      username.includes('{{') ||
+      username.includes('{%') ||
+      username.toLowerCase() === 'guest' ||
+      username.toLowerCase() === 'my account' ||
+      username.toLowerCase() === 'account overview'
+    ) {
+      return '';
+    }
+
+    return username;
+  }
+
+  function getUsername() {
+    /* 1. Try the Account Overview card */
+    const overviewCards = document.querySelectorAll(
+      '.totals-block__card'
+    );
+
+    for (const card of overviewCards) {
+      const value = card.querySelector(
+        '.totals-block__count-value'
+      );
+
+      const username = validUsername(value?.textContent || '');
+
+      if (username) return username;
+    }
+
+    /* 2. Try the Twig-provided username */
+    const twigSource = document.querySelector(
+      '[data-smmxgen-username]'
+    );
+
+    const twigUsername = validUsername(
+      twigSource?.getAttribute('data-smmxgen-username') || ''
+    );
+
+    if (twigUsername) return twigUsername;
+
+    /* 3. Try other existing username elements */
+    const selectors = [
+      '[data-username]',
+      '.sidebar-user-name',
+      '.sidebar-username',
+      '.profile-username',
+      '.user-profile__name',
+      '.user-name',
+      '.username',
+      '.smx-account-username'
+    ];
+
+    for (const selector of selectors) {
+      const element = document.querySelector(selector);
+
+      if (!element || element.closest('#' + PROFILE_ID)) {
+        continue;
+      }
+
+      const username = validUsername(
+        element.getAttribute('data-username') ||
+        element.textContent ||
+        ''
+      );
+
+      if (username) return username;
+    }
+
+    return '';
+  }
+
+  function createProfile() {
+    const footer = document.createElement('div');
+    footer.id = PROFILE_ID;
+
+    footer.innerHTML = `
+      <a class="sx-profile-main" href="/account"
+         aria-label="Open account">
+        <span class="sx-profile-avatar">${userIcon}</span>
+        <span class="sx-profile-info">
+          <span class="sx-profile-name"></span>
+          <span class="sx-profile-label">Account</span>
+        </span>
+      </a>
+
+      <a class="sx-profile-logout" href="/logout"
+         aria-label="Logout" title="Logout">
+        ${logoutIcon}
+      </a>
+    `;
+
+    return footer;
+  }
+
+  function removeOldProfiles() {
+    document.querySelectorAll(
+      '.sx-profile-footer, #smmxgen-sidebar-profile'
+    ).forEach(element => element.remove());
+  }
+
+  function mount() {
+    const sidebar = document.querySelector(SIDEBAR);
+    if (!sidebar) return;
+
+    const menu = sidebar.querySelector(
+      '.component-sidebar__menu'
+    );
+
+    const list = menu?.querySelector(
+      'ul.sidebar-block__left-menu'
+    );
+
+    if (!menu || !list) return;
+
+    let footer = document.getElementById(PROFILE_ID);
+
+    if (!footer) {
+      removeOldProfiles();
+      footer = createProfile();
+    }
+
+    /* Remove original sidebar Account and Logout links */
+    const links = [...list.querySelectorAll('a[href]')];
+
+    const account = links.find(link =>
+      getPath(link) === '/account'
+    );
+
+    const logout = links.find(link =>
+      getPath(link) === '/logout'
+    );
+
+    if (account) {
+      footer.querySelector('.sx-profile-main').href =
+        account.href;
+
+      const item = account.closest('li');
+      if (item) item.remove();
+      else account.remove();
+    }
+
+    if (logout) {
+      footer.querySelector('.sx-profile-logout').href =
+        logout.href;
+
+      const item = logout.closest('li');
+      if (item) item.remove();
+      else logout.remove();
+    }
+
+    /* Update name from the available page source */
+    const username = getUsername();
+
+    footer.querySelector('.sx-profile-name').textContent =
+      username || 'My Account';
+
+    /* Place footer OUTSIDE the UL, at the bottom of the menu */
+    if (
+      footer.parentElement !== menu ||
+      menu.lastElementChild !== footer
+    ) {
+      menu.appendChild(footer);
+    }
+  }
+
+  function init() {
+    mount();
+
+    let scheduled = false;
+
+    const observer = new MutationObserver(() => {
+      if (scheduled) return;
+      scheduled = true;
+
+      requestAnimationFrame(() => {
+        scheduled = false;
+        mount();
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, {
+      once: true
+    });
+  } else {
+    init();
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style>
+/* SMMXGEN — CSS ONLY
+Paste this file into the CSS / Custom CSS field.
+Contains component CSS and the V4 warm-charcoal geometric card redesign.
+*/
+
+.smx-dashboard,.smx-dashboard*{font-family:inherit!important;box-sizing:border-box;}.smx-dashboard{width:100%;margin:0 auto;padding:10px 0;}.smx-dashboard-layout{display:grid;grid-template-columns:minmax(0,1fr)minmax(0,1fr);gap:18px;align-items:stretch;}.smx-panel,.smx-stat{position:relative;background:radial-gradient(ellipse at 0% 0%,rgba(237,168,0,.055),transparent 46%),linear-gradient(145deg,#101113 0%,#08090b 56%,#050506 100%);border:1px solid #292a2d;border-radius:18px;overflow:hidden;box-shadow:0 14px 38px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.025);}.smx-account-panel{min-height:310px;padding:27px;display:flex;flex-direction:column;}.smx-account-panel::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:2px;opacity:.65;pointer-events:none;}.smx-account-panel::after{content:none!important;display:none!important;}.smx-account-decoration,.smx-account-decoration::before,.smx-account-decoration::after{display:none!important;content:none!important;}.smx-account-header{position:relative;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;gap:15px;}.smx-account-heading{min-width:0;}.smx-account-eyebrow{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.40);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}.smx-account-eyebrow::before{content:"";width:23px;height:2px;flex:0 0 23px;background:#eda800;border-radius:5px;}.smx-account-username{margin-top:9px;color:#fff;font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.5px;word-break:break-word;}.smx-account-subtitle{margin-top:7px;color:rgba(255,255,255,.34);font-size:10px;line-height:1.5;}.smx-premium-tag{position:relative;z-index:6;flex-shrink:0;display:flex;align-items:center;gap:7px;padding:7px 11px;color:#eda800;background:linear-gradient(135deg,rgba(237,168,0,.085),rgba(255,255,255,.018));border:1px solid rgba(237,168,0,.22);border-radius:50px;font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;box-shadow:0 0 15px rgba(237,168,0,.035);}.smx-premium-tag-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#eda800;box-shadow:0 0 8px rgba(237,168,0,.45);}.smx-offer{position:relative;z-index:5;margin-top:23px;padding:15px 16px;display:flex;align-items:center;justify-content:space-between;gap:15px;background:radial-gradient(ellipse at 0% 0%,rgba(237,168,0,.10),transparent 58%),linear-gradient(120deg,#14120c,#0b0b0c 72%);border:1px solid rgba(237,168,0,.20);border-radius:14px;box-shadow:inset 0 0 25px rgba(237,168,0,.015);}.smx-offer::before{content:"";position:absolute;top:0;left:0;width:35px;height:35px;opacity:.6;pointer-events:none;}.smx-offer-content{min-width:0;}.smx-offer-heading{color:#eda800;font-size:8px;font-weight:800;letter-spacing:1.25px;text-transform:uppercase;}.smx-offer-title{margin-top:5px;color:#fff;font-size:12px;line-height:1.4;font-weight:600;}.smx-offer-note{margin-top:4px;color:rgba(255,255,255,.28);font-size:8px;}.smx-offer-percent{width:50px;height:50px;flex:0 0 50px;display:flex;align-items:center;justify-content:center;color:#eda800;background:#050505;border:1px solid rgba(237,168,0,.24);border-radius:50%;font-size:16px;font-weight:800;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 6px 18px rgba(0,0,0,.22);}.smx-account-footer{position:relative;z-index:5;margin-top:auto;padding-top:17px;display:flex;align-items:center;width:100%;border-top:1px solid #191919;}.smx-system-info{display:flex;align-items:center;justify-content:space-between;width:100%;gap:15px;}.smx-system-item{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.42);font-size:8px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;}.smx-system-item strong{color:rgba(255,255,255,.75);}.smx-online-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#55c76a;box-shadow:0 0 0 4px rgba(85,199,106,.055),0 0 10px rgba(85,199,106,.35);}.smx-svg-icon{width:21px;height:21px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.smx-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}.smx-stat{min-height:146px;padding:22px;display:flex;flex-direction:column;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;}.smx-stat::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:2px;opacity:.7;}.smx-stat::after{display:none!important;content:none!important;}.smx-stat:nth-child(1),.smx-stat:nth-child(2),.smx-stat:nth-child(3),.smx-stat:nth-child(4){}.smx-stat:hover{transform:translateY(-3px);border-color:rgba(237,168,0,.30);box-shadow:0 12px 35px rgba(0,0,0,.16);}.smx-stat-icon{position:relative;z-index:5;width:46px;height:46px;display:flex;align-items:center;justify-content:center;color:#eda800;background:linear-gradient(145deg,rgba(237,168,0,.10),rgba(255,255,255,.018));border:1px solid rgba(237,168,0,.18);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);}.smx-stat-value{position:relative;z-index:5;margin-top:auto;padding-top:15px;color:#fff;font-size:24px;line-height:1.15;font-weight:700;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.smx-stat:nth-child(2).smx-stat-value,.smx-stat:nth-child(4).smx-stat-value{color:#eda800;}.smx-stat-label{position:relative;z-index:5;margin-top:6px;color:rgba(255,255,255,.35);font-size:9px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;}@media(max-width:991px){.smx-dashboard-layout{grid-template-columns:1fr;}.smx-account-panel{min-height:0;}}@media(max-width:575px){.smx-dashboard{padding:7px 0;}.smx-dashboard-layout{gap:13px;}.smx-account-panel{padding:21px;border-radius:16px;}.smx-account-username{font-size:24px;}.smx-account-subtitle{font-size:9px;}.smx-premium-tag{padding:6px 8px;font-size:7px;}.smx-offer{margin-top:18px;padding:12px;}.smx-offer-title{font-size:10px;}.smx-offer-percent{width:43px;height:43px;flex-basis:43px;font-size:14px;}.smx-account-footer{margin-top:18px;padding-top:14px;}.smx-system-info{gap:10px;}.smx-system-item{font-size:7px;}.smx-stats{grid-template-columns:1fr;gap:12px;}.smx-stat{min-height:130px;padding:20px;border-radius:16px;}.smx-stat-value{font-size:22px;}}
+
+.smmxgen-description-theme,.smmxgen-description-theme*{font-family:inherit!important;box-sizing:border-box;}.smmxgen-description-theme{position:relative;width:100%;padding:0;margin-bottom:18px;background:#171717;border:1px solid #292a2d;border-radius:18px;overflow:hidden;isolation:isolate;box-shadow:0 14px 38px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.025);}.smmxgen-description-theme::before{content:"";position:absolute;z-index:4;left:0;top:18px;bottom:18px;width:2px;pointer-events:none;}.smmxgen-theme-decoration{display:none!important;}.smmxgen-theme-header{position:relative;z-index:2;display:flex;align-items:center;gap:13px;padding:22px 22px 20px;background:radial-gradient(ellipse at 0% 0%,rgba(237,168,0,.09),transparent 60%),linear-gradient(120deg,#141416,#0b0b0d 70%);border-bottom:1px solid #242529;}.smmxgen-theme-header-icon{position:relative;width:43px;height:43px;flex:0 0 43px;display:flex;align-items:center;justify-content:center;color:#eda800;background:linear-gradient(145deg,rgba(237,168,0,.10),rgba(255,255,255,.018));border:1px solid rgba(237,168,0,.18);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);}.smmxgen-theme-header-icon span{color:#eda800;font-size:22px;line-height:1;}.smmxgen-theme-heading{min-width:0;}.smmxgen-theme-title{color:#fff;font-size:16px;font-weight:700;line-height:1.3;}.smmxgen-theme-subtitle{margin-top:5px;color:rgba(255,255,255,.38);font-size:11px;line-height:1.5;}.smmxgen-theme-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:18px;}.smmxgen-theme-item{position:relative;min-width:0;display:flex;align-items:center;gap:12px;padding:14px;background:#000;border:1px solid #292b2f;border-radius:13px;overflow:hidden;transition:transform .22s ease,border-color .22s ease,background .22s ease,box-shadow .22s ease;}.smmxgen-theme-item::before{display:none!important;content:none!important;}.smmxgen-theme-item:hover{transform:translateY(-2px);background:#080704;border-color:rgba(237,168,0,.30);box-shadow:0 8px 22px rgba(0,0,0,.20);}.smmxgen-theme-icon{position:relative;z-index:1;width:43px;height:43px;flex:0 0 43px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,rgba(237,168,0,.10),rgba(255,255,255,.018));border:1px solid rgba(237,168,0,.18);border-radius:11px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);transition:background .22s ease,border-color .22s ease;}.smmxgen-theme-item:hover .smmxgen-theme-icon{background:linear-gradient(145deg,rgba(237,168,0,.17),rgba(237,168,0,.045));border-color:rgba(237,168,0,.32);}.smmxgen-theme-icon img{display:block;width:22px;height:22px;object-fit:contain;filter:brightness(0)saturate(100%)invert(68%)sepia(96%)saturate(1700%)hue-rotate(3deg)brightness(101%)contrast(102%);opacity:1;}.smmxgen-theme-info{position:relative;z-index:1;flex:1;min-width:0;}.smmxgen-theme-label{margin-bottom:5px;color:rgba(255,255,255,.40);font-size:9px;font-weight:700;line-height:1.4;letter-spacing:1px;text-transform:uppercase;}.smmxgen-theme-value{color:#fff;font-size:13px;font-weight:600;line-height:1.5;overflow-wrap:anywhere;word-break:break-word;}.smmxgen-not-available{color:rgba(255,255,255,.30)!important;font-size:12px;font-weight:500;font-style:italic;}.smmxgen-demo-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%;padding:7px 11px;color:#eda800!important;background:linear-gradient(135deg,rgba(237,168,0,.085),rgba(255,255,255,.018));border:1px solid rgba(237,168,0,.22);border-radius:50px;font-size:10px;font-weight:800;line-height:1.4;text-decoration:none!important;white-space:nowrap;transition:transform .22s ease,background .22s ease,border-color .22s ease,box-shadow .22s ease;}.smmxgen-demo-button:hover{color:#eda800!important;background:rgba(237,168,0,.15);border-color:rgba(237,168,0,.40);box-shadow:0 0 15px rgba(237,168,0,.07);transform:translateY(-1px);}.smmxgen-demo-arrow{font-size:14px;line-height:1;opacity:.85;}.smmxgen-warning-section{position:relative;z-index:1;margin:0 18px 18px;padding:17px;background:#000;border:1px solid #292b2f;border-radius:14px;overflow:hidden;}.smmxgen-warning-section::before{display:none!important;content:none!important;}.smmxgen-warning-header{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding-bottom:15px;margin-bottom:3px;border-bottom:1px solid #191919;}.smmxgen-warning-header-icon{width:42px;height:42px;flex:0 0 42px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,rgba(237,168,0,.105),rgba(237,168,0,.025));border:1px solid rgba(237,168,0,.19);border-radius:12px;}.smmxgen-warning-header-icon img{display:block;width:22px;height:22px;object-fit:contain;}.smmxgen-warning-title{color:#fff;font-size:14px;font-weight:700;line-height:1.3;}.smmxgen-warning-subtitle{margin-top:4px;color:#eda800;font-size:9px;font-weight:800;line-height:1.3;letter-spacing:1.3px;}.smmxgen-warning-list{position:relative;z-index:1;}.smmxgen-warning-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #191919;transition:padding-left .2s ease;}.smmxgen-warning-item:hover{padding-left:4px;}.smmxgen-warning-item:last-child{padding-bottom:2px;border-bottom:none;}.smmxgen-warning-item:first-child{padding-top:12px;}.smmxgen-warning-icon{width:30px;height:30px;flex:0 0 30px;display:flex;align-items:center;justify-content:center;background:rgba(237,168,0,.045);border:1px solid rgba(237,168,0,.10);border-radius:9px;}.smmxgen-warning-icon img{display:block;width:17px;height:17px;object-fit:contain;filter:brightness(0)saturate(100%)invert(68%)sepia(96%)saturate(1700%)hue-rotate(3deg)brightness(101%)contrast(102%);}.smmxgen-warning-text{flex:1;min-width:0;color:rgba(255,255,255,.65);font-size:11px;font-weight:500;line-height:1.6;overflow-wrap:anywhere;}@media(max-width:991px){.smmxgen-description-theme{margin-top:15px;border-radius:17px;}.smmxgen-theme-grid{gap:10px;padding:14px;}.smmxgen-theme-item{padding:12px;gap:10px;}.smmxgen-warning-section{margin:0 14px 14px;padding:14px;}}@media(max-width:575px){.smmxgen-description-theme{margin-top:13px;border-radius:16px;}.smmxgen-theme-header{gap:11px;padding:17px;}.smmxgen-theme-header-icon{width:39px;height:39px;flex-basis:39px;border-radius:11px;}.smmxgen-theme-header-icon span{font-size:20px;}.smmxgen-theme-title{font-size:15px;}.smmxgen-theme-subtitle{font-size:10px;}.smmxgen-theme-grid{grid-template-columns:minmax(0,1fr);gap:9px;padding:12px;}.smmxgen-theme-item{padding:12px;gap:12px;border-radius:13px;}.smmxgen-theme-icon{width:40px;height:40px;flex-basis:40px;border-radius:11px;}.smmxgen-theme-icon img{width:21px;height:21px;}.smmxgen-theme-label{font-size:9px;}.smmxgen-theme-value{font-size:12px;}.smmxgen-warning-section{margin:0 12px 12px;padding:13px;border-radius:13px;}.smmxgen-warning-header{gap:10px;padding-bottom:12px;}.smmxgen-warning-header-icon{width:38px;height:38px;flex-basis:38px;border-radius:11px;}.smmxgen-warning-header-icon img{width:20px;height:20px;}.smmxgen-warning-title{font-size:13px;}.smmxgen-warning-item{gap:10px;padding:11px 0;}.smmxgen-warning-icon{width:28px;height:28px;flex-basis:28px;}.smmxgen-warning-icon img{width:16px;height:16px;}.smmxgen-warning-text{font-size:10px;line-height:1.55;}}@media(prefers-reduced-motion:reduce){.smmxgen-description-theme*,.smmxgen-description-theme*::before,.smmxgen-description-theme*::after{transition:none!important;animation:none!important;}}
+
+.smx-platform-selector,.smx-platform-selector*{box-sizing:border-box;font-family:inherit!important;}.smx-platform-selector{position:relative;isolation:isolate;display:block;width:100%!important;max-width:100%!important;min-width:0;margin:10px 0 12px!important;padding:8px 10px!important;left:auto!important;right:auto!important;transform:none!important;overflow:hidden;color:#f7f7f7;background:radial-gradient(ellipse at 50% 0%,rgba(237,168,0,.055),transparent 64%),linear-gradient(145deg,#101113,#08090b 70%);border:1px solid #292a2d;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.025);}.smx-platform-selector::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:2px;background:linear-gradient(180deg,transparent,var(--smx-v5-copper-light) 20%,var(--smx-v5-copper) 76%,transparent);pointer-events:none;}.smx-platform-selector::after{content:none!important;display:none!important;}.smx-platform-selector__heading{position:relative;z-index:1;margin:0;color:#f7f7f7;font-size:13px;line-height:1.3;font-weight:700;text-align:center;}.smx-platform-selector__heading span{color:#eda800;}.smx-platform-selector__subtitle{position:relative;z-index:1;margin:2px 0 7px;color:#929292;font-size:8px;line-height:1.4;text-align:center;}.smx-platform-selector .platforms{position:relative;z-index:1;display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;width:100%!important;max-width:100%!important;min-width:0;margin:0!important;padding:0!important;}.smx-platform-selector .platforms-item,.smx-platform-selector .platforms-item-col-6{display:block!important;float:none!important;width:auto!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:0!important;}.smx-platform-selector .platforms-item__with-icon{display:flex!important;flex-direction:row;align-items:center;justify-content:center;gap:5px;width:100%!important;min-width:0;min-height:31px;margin:0!important;padding:4px 5px!important;color:#bdbdbd!important;background:linear-gradient(145deg,#151619,#0b0c0e)!important;border:1px solid #292b2f!important;border-radius:9px!important;box-shadow:none!important;outline:none!important;text-align:center;white-space:normal!important;overflow:hidden;cursor:pointer;transform:none!important;transition:background-color .18s ease,border-color .18s ease,color .18s ease!important;}.smx-platform-selector .platforms-item__with-icon::before,.smx-platform-selector .platforms-item__with-icon::after{display:none!important;content:none!important;}.smx-platform-selector .platforms-item__icon{display:flex!important;align-items:center;justify-content:center;width:16px!important;height:16px!important;min-width:16px;min-height:16px;flex:0 0 16px;margin:0!important;color:#eda800!important;opacity:.95;}.smx-platform-selector .platforms-item__icon svg{display:block!important;width:100%!important;height:100%!important;max-width:16px;max-height:16px;fill:currentColor;}.smx-platform-selector .platforms-item__title{display:block!important;flex:0 1 auto;width:auto!important;min-width:0;max-width:100%;margin:0!important;padding:0!important;color:inherit!important;font-size:9.5px!important;line-height:1.25!important;font-weight:600!important;overflow-wrap:anywhere;text-align:center;}.smx-platform-selector .platforms-item__with-icon.active{color:#eda800!important;background:linear-gradient(145deg,rgba(237,168,0,.13),rgba(237,168,0,.045))!important;border-color:rgba(237,168,0,.68)!important;box-shadow:inset 0 0 0 1px rgba(237,168,0,.07)!important;}.smx-platform-selector .platforms-item__with-icon.active .platforms-item__icon{color:#eda800!important;opacity:1;}.smx-platform-selector .platforms-item__with-icon:hover,.smx-platform-selector .platforms-item__with-icon:focus,.smx-platform-selector .platforms-item__with-icon:active{transform:none!important;box-shadow:none!important;}.smx-platform-selector .platforms-item__with-icon:hover{color:#f2f2f2!important;background:linear-gradient(145deg,#1a1b1e,#101113)!important;border-color:#51545a!important;}.smx-platform-selector .platforms-item__with-icon.active:hover{color:#eda800!important;background:linear-gradient(145deg,rgba(237,168,0,.13),rgba(237,168,0,.045))!important;border-color:rgba(237,168,0,.68)!important;}@media(max-width:1200px){.smx-platform-selector .platforms{grid-template-columns:repeat(6,minmax(0,1fr));}}@media(max-width:767px){.smx-platform-selector{width:100%!important;max-width:100%!important;margin:8px 0 10px!important;padding:8px 7px!important;border-radius:11px;}.smx-platform-selector__heading{font-size:14px;}.smx-platform-selector__subtitle{margin-bottom:7px;font-size:9px;}.smx-platform-selector .platforms{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}.smx-platform-selector .platforms-item__with-icon{width:94%!important;min-height:37px;gap:4px;padding:5px 3px!important;border-radius:9px!important;}.smx-platform-selector .platforms-item__icon{width:16px!important;height:16px!important;min-width:16px;min-height:16px;flex-basis:16px;}.smx-platform-selector .platforms-item__title{font-size:9px!important;}}@media(max-width:360px){.smx-platform-selector{padding-right:5px!important;padding-left:5px!important;}.smx-platform-selector .platforms{gap:4px;}.smx-platform-selector .platforms-item__with-icon{width:97%!important;gap:3px;padding:5px 2px!important;}.smx-platform-selector .platforms-item__title{font-size:8px!important;}}@media(prefers-reduced-motion:reduce){.smx-platform-selector*,.smx-platform-selector*::before,.smx-platform-selector*::after{transition:none!important;animation:none!important;}}
+
+.smx-platform-selector .platforms{display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr))!important;align-items:center!important;justify-items:center!important;column-gap:1px!important;row-gap:3px!important;width:100%!important;}.smx-platform-selector .platforms-item,.smx-platform-selector .platforms-item-col-6{width:100%!important;min-width:0!important;display:flex!important;justify-content:center!important;align-items:center!important;margin:0!important;}.smx-platform-selector .platforms-item__with-icon{width:78%!important;max-width:100%!important;min-width:0!important;min-height:39px!important;height:auto!important;margin:0 auto!important;padding:7px 2px!important;gap:3px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;text-align:center!important;border-radius:8px!important;box-sizing:border-box!important;}.smx-platform-selector .platforms-item__icon{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;flex:0 0 18px!important;}.smx-platform-selector .platforms-item__icon svg{display:block!important;width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important;}.smx-platform-selector .platforms-item__title{min-width:0!important;margin:0!important;padding:0!important;font-size:10.5px!important;line-height:1.25!important;font-weight:600!important;text-align:center!important;overflow-wrap:anywhere!important;}@media(max-width:1200px){.smx-platform-selector .platforms{grid-template-columns:repeat(6,minmax(0,1fr))!important;column-gap:1px!important;}.smx-platform-selector .platforms-item__with-icon{width:82%!important;}}@media(max-width:767px){.smx-platform-selector .platforms{grid-template-columns:repeat(3,minmax(0,1fr))!important;column-gap:1px!important;row-gap:3px!important;}.smx-platform-selector .platforms-item__with-icon{width:88%!important;min-height:40px!important;padding:7px 2px!important;gap:3px!important;}.smx-platform-selector .platforms-item__icon,.smx-platform-selector .platforms-item__icon svg{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;flex-basis:18px!important;}.smx-platform-selector .platforms-item__title{font-size:10px!important;}}@media(max-width:360px){.smx-platform-selector .platforms-item__with-icon{width:90%!important;gap:3px!important;padding:6px 2px!important;}.smx-platform-selector .platforms-item__title{font-size:9.5px!important;}}
+
+.smx-platform-selector{padding-top:16px!important;padding-bottom:20px!important;}.smx-platform-selector__heading{font-size:15px!important;line-height:1.4!important;}.smx-platform-selector__subtitle{font-size:10px!important;line-height:1.5!important;margin:3px 0 12px!important;}.smx-platform-selector .platforms{display:grid!important;grid-template-columns:repeat(auto-fit,108px)!important;justify-content:center!important;justify-items:stretch!important;align-items:center!important;column-gap:8px!important;row-gap:7px!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;margin:0 auto!important;padding:0!important;}.smx-platform-selector .platforms-item,.smx-platform-selector .platforms-item-col-6{display:flex!important;justify-content:stretch!important;align-items:stretch!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:0!important;}.smx-platform-selector .platforms-item__with-icon{display:inline-flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:40px!important;height:auto!important;margin:0!important;padding:7px 6px!important;gap:6px!important;white-space:nowrap!important;box-sizing:border-box!important;}.smx-platform-selector .platforms-item__icon,.smx-platform-selector .platforms-item__icon svg{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;max-width:18px!important;max-height:18px!important;flex:0 0 18px!important;}.smx-platform-selector .platforms-item__title{font-size:11px!important;line-height:1.3!important;white-space:nowrap!important;overflow-wrap:normal!important;}@media(max-width:1200px){.smx-platform-selector .platforms{grid-template-columns:repeat(auto-fit,108px)!important;column-gap:8px!important;}}@media(max-width:767px){.smx-platform-selector{padding:14px 7px 20px!important;}.smx-platform-selector__heading{font-size:15px!important;}.smx-platform-selector__subtitle{font-size:10px!important;margin-bottom:12px!important;}.smx-platform-selector .platforms{grid-template-columns:repeat(auto-fit,108px)!important;justify-content:center!important;column-gap:7px!important;row-gap:6px!important;}.smx-platform-selector .platforms-item__with-icon{min-height:40px!important;padding:7px 5px!important;gap:5px!important;}.smx-platform-selector .platforms-item__title{font-size:10px!important;}}@media(max-width:360px){.smx-platform-selector .platforms{grid-template-columns:repeat(auto-fit,minmax(0,108px))!important;column-gap:7px!important;}}
+
+/* Previous global theme block removed: V5 intentionally styles cards only. */
+
+/* ==========================================================
+   SMMXGEN V5 — OBSIDIAN / SIGNAL
+   Card-only redesign. No page, body, navigation, or site-wide backgrounds.
+   ========================================================== */
+:root{
+  --smx-v5-ink:#11110f;
+  --smx-v5-panel:#151512;
+  --smx-v5-panel-deep:#0d0d0b;
+  --smx-v5-line:rgba(224,169,73,.19);
+  --smx-v5-line-bright:rgba(235,183,92,.56);
+  --smx-v5-copper:#d7a24c;
+  --smx-v5-copper-light:#f0c779;
+  --smx-v5-muted:#aaa59a;
+}
+
+/* Main account card: architectural grid + restrained copper illumination */
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smmxgen-description-theme,
+.smx-platform-selector{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background-color:var(--smx-v5-panel-deep)!important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.105),transparent 34%),
+    linear-gradient(135deg,rgba(255,255,255,.018),transparent 40%),
+    repeating-linear-gradient(0deg,transparent 0,transparent 31px,rgba(215,162,76,.035) 32px),
+    repeating-linear-gradient(90deg,transparent 0,transparent 31px,rgba(215,162,76,.035) 32px)!important;
+  border:1px solid rgba(215,162,76,.18)!important;
+  border-radius:18px!important;
+  box-shadow:0 18px 44px rgba(0,0,0,.27),inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+
+/* Fine technical corner marks and a crisp inner frame */
+.smx-dashboard .smx-account-panel::after,
+.smx-dashboard .smx-stat::after,
+.smmxgen-description-theme::after,
+.smx-platform-selector::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  z-index:0!important;
+  inset:7px!important;
+  border:1px solid rgba(215,162,76,.055)!important;
+  border-radius:12px!important;
+  background:
+    linear-gradient(var(--smx-v5-copper),var(--smx-v5-copper)) left top/22px 1px no-repeat,
+    linear-gradient(var(--smx-v5-copper),var(--smx-v5-copper)) left top/1px 22px no-repeat,
+    linear-gradient(var(--smx-v5-copper),var(--smx-v5-copper)) right bottom/22px 1px no-repeat,
+    linear-gradient(var(--smx-v5-copper),var(--smx-v5-copper)) right bottom/1px 22px no-repeat!important;
+  opacity:.7!important;
+  pointer-events:none!important;
+}
+.smx-dashboard .smx-account-panel>* ,
+.smx-dashboard .smx-stat>* ,
+.smmxgen-description-theme>* ,
+.smx-platform-selector>*{
+  position:relative;
+  z-index:1;
+}
+
+/* Copper rail: less neon, more premium hardware */
+.smx-dashboard .smx-account-panel::before,
+.smx-dashboard .smx-stat::before,
+.smmxgen-description-theme::before{
+  background:linear-gradient(180deg,transparent,var(--smx-v5-copper-light) 20%,var(--smx-v5-copper) 76%,transparent)!important;
+  width:2px!important;
+  opacity:.9!important;
+}
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat{border-color:rgba(215,162,76,.19)!important;}
+.smx-dashboard .smx-stat{background-image:
+  radial-gradient(circle at 100% 0%,rgba(215,162,76,.10),transparent 38%),
+  repeating-linear-gradient(0deg,transparent 0,transparent 27px,rgba(215,162,76,.028) 28px),
+  repeating-linear-gradient(90deg,transparent 0,transparent 27px,rgba(215,162,76,.028) 28px),
+  linear-gradient(145deg,#171713 0%,#0e0e0c 70%)!important;
+  transition:border-color .22s ease,transform .22s ease,box-shadow .22s ease!important;
+}
+.smx-dashboard .smx-stat:hover{
+  transform:translateY(-3px)!important;
+  border-color:var(--smx-v5-line-bright)!important;
+  box-shadow:0 20px 48px rgba(0,0,0,.34),0 0 0 1px rgba(215,162,76,.06),inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+
+/* Accent tiles and typography */
+.smx-dashboard .smx-stat-icon,
+.smx-dashboard .smx-premium-tag,
+.smx-dashboard .smx-offer-percent,
+.smmxgen-theme-header-icon,
+.smmxgen-theme-icon{
+  color:var(--smx-v5-copper-light)!important;
+  background:linear-gradient(145deg,rgba(215,162,76,.13),rgba(215,162,76,.025))!important;
+  border-color:rgba(215,162,76,.28)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 5px 18px rgba(0,0,0,.13)!important;
+}
+.smx-dashboard .smx-stat-value,
+.smx-dashboard .smx-stat-label,
+.smx-dashboard .smx-account-username,
+.smmxgen-theme-title{ text-shadow:0 1px 0 rgba(0,0,0,.3); }
+.smx-dashboard .smx-stat-value{color:#f5f1e8!important;}
+.smx-dashboard .smx-stat-label,.smx-dashboard .smx-account-subtitle{color:var(--smx-v5-muted)!important;}
+.smx-dashboard .smx-premium-tag,.smx-dashboard .smx-offer-heading{color:var(--smx-v5-copper-light)!important;}
+.smx-dashboard .smx-offer{
+  background-image:linear-gradient(115deg,rgba(215,162,76,.095),transparent 58%),repeating-linear-gradient(135deg,rgba(215,162,76,.025) 0,rgba(215,162,76,.025) 1px,transparent 1px,transparent 9px)!important;
+  background-color:#11110e!important;
+  border-color:rgba(215,162,76,.23)!important;
+}
+.smx-dashboard .smx-account-footer{border-top-color:rgba(215,162,76,.14)!important;}
+
+/* Service-description cards: premium technical panel, not a flat black box */
+.smmxgen-description-theme{
+  background-image:
+    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.09),transparent 35%),
+    repeating-linear-gradient(0deg,transparent 0,transparent 35px,rgba(215,162,76,.027) 36px),
+    repeating-linear-gradient(90deg,transparent 0,transparent 35px,rgba(215,162,76,.027) 36px),
+    linear-gradient(145deg,#151512,#0b0b09)!important;
+}
+.smmxgen-theme-header{
+  background-image:linear-gradient(110deg,rgba(215,162,76,.10),transparent 66%),linear-gradient(145deg,#1a1915,#10100e)!important;
+  border-bottom-color:rgba(215,162,76,.16)!important;
+}
+.smmxgen-theme-item{
+  background-image:linear-gradient(135deg,rgba(215,162,76,.045),transparent 65%)!important;
+  background-color:#10100e!important;
+  border-color:rgba(215,162,76,.14)!important;
+}
+.smmxgen-theme-item:hover{
+  background-color:#191710!important;
+  border-color:rgba(235,183,92,.45)!important;
+  box-shadow:0 10px 25px rgba(0,0,0,.23),inset 0 0 0 1px rgba(215,162,76,.035)!important;
+}
+.smmxgen-theme-icon img{filter:brightness(0) saturate(100%) invert(74%) sepia(32%) saturate(630%) hue-rotate(354deg) brightness(96%) contrast(91%)!important;}
+
+/* Platform selector: each platform is a compact technical chip */
+.smx-platform-selector{
+  background-image:radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.075),transparent 42%),repeating-linear-gradient(0deg,transparent 0,transparent 34px,rgba(215,162,76,.026) 35px),repeating-linear-gradient(90deg,transparent 0,transparent 34px,rgba(215,162,76,.026) 35px),linear-gradient(145deg,#151512,#0c0c0a)!important;
+}
+.smx-platform-selector .platforms-item__with-icon{
+  background-image:linear-gradient(145deg,rgba(215,162,76,.055),transparent)!important;
+  background-color:#11110f!important;
+  color:#c9c2b5!important;
+  border-color:rgba(215,162,76,.16)!important;
+}
+.smx-platform-selector .platforms-item__icon{color:var(--smx-v5-copper-light)!important;}
+.smx-platform-selector .platforms-item__with-icon.active,
+.smx-platform-selector .platforms-item__with-icon.active:hover{
+  color:var(--smx-v5-copper-light)!important;
+  background-image:linear-gradient(145deg,rgba(215,162,76,.18),rgba(215,162,76,.055))!important;
+  background-color:#17140e!important;
+  border-color:rgba(235,183,92,.62)!important;
+  box-shadow:inset 0 0 0 1px rgba(215,162,76,.08),0 0 16px rgba(215,162,76,.045)!important;
+}
+.smx-platform-selector .platforms-item__with-icon:hover{
+  background-color:#191812!important;
+  border-color:rgba(215,162,76,.38)!important;
+}
+
+/* Intentionally no generic .card / .panel / .well styling here.
+   Unrelated Perfect Panel cards and the New Order form keep their native theme. */
+@media(max-width:575px){
+  .smx-dashboard .smx-account-panel,.smx-dashboard .smx-stat,.smmxgen-description-theme,.smx-platform-selector{border-radius:15px!important;}
+  .smx-dashboard .smx-account-panel::after,.smx-dashboard .smx-stat::after,.smmxgen-description-theme::after,.smx-platform-selector::after{inset:5px!important;border-radius:10px!important;}
+}
+
+
+
+/* ==========================================================
+   SMMXGEN V6 — OBSIDIAN AURORA / ARTISTIC METAL FINISH
+   Replaces repeated grid patterns with layered light, depth,
+   soft brushed-metal sweeps and restrained copper reflections.
+   Scoped only to the SMMXGEN components; no global card styling.
+   ========================================================== */
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smmxgen-description-theme,
+.smx-platform-selector{
+  background-color:#0c0d0c!important;
+  background-image:
+    radial-gradient(ellipse at 88% 8%,rgba(226,177,91,.15) 0%,rgba(226,177,91,.045) 22%,transparent 49%),
+    radial-gradient(ellipse at 8% 100%,rgba(110,91,58,.12) 0%,transparent 42%),
+    linear-gradient(122deg,transparent 0%,rgba(255,255,255,.018) 22%,transparent 39%),
+    linear-gradient(148deg,#171714 0%,#10110f 42%,#090a09 76%,#11100d 100%)!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+}
+
+/* A quiet copper sheen instead of the old square grid */
+.smx-dashboard .smx-account-panel::after,
+.smx-dashboard .smx-stat::after,
+.smmxgen-description-theme::after,
+.smx-platform-selector::after{
+  background:
+    linear-gradient(118deg,transparent 0%,rgba(240,199,121,.11) 48%,transparent 70%) top right/100% 1px no-repeat,
+    linear-gradient(180deg,rgba(240,199,121,.30),rgba(215,162,76,.04)) left top/1px 34px no-repeat,
+    linear-gradient(270deg,rgba(240,199,121,.22),transparent) right bottom/38px 1px no-repeat,
+    linear-gradient(0deg,rgba(240,199,121,.12),transparent) right bottom/1px 28px no-repeat!important;
+  border-color:rgba(215,162,76,.075)!important;
+  opacity:.8!important;
+}
+
+/* Individual stat cards: each gets a soft off-center light pool */
+.smx-dashboard .smx-stat{
+  background-image:
+    radial-gradient(ellipse at 92% 4%,rgba(230,181,94,.15),transparent 38%),
+    radial-gradient(ellipse at 0% 100%,rgba(255,255,255,.025),transparent 48%),
+    linear-gradient(145deg,#171815 0%,#10110f 48%,#0b0c0b 100%)!important;
+}
+.smx-dashboard .smx-stat:nth-child(2){
+  background-image:
+    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.17),transparent 42%),
+    linear-gradient(155deg,rgba(255,255,255,.022),transparent 42%),
+    linear-gradient(145deg,#171611 0%,#10100d 55%,#0a0b0a 100%)!important;
+}
+.smx-dashboard .smx-stat:nth-child(3){
+  background-image:
+    radial-gradient(ellipse at 0% 0%,rgba(215,162,76,.12),transparent 42%),
+    linear-gradient(125deg,transparent 34%,rgba(255,255,255,.018) 52%,transparent 70%),
+    linear-gradient(145deg,#151613 0%,#0d0e0c 100%)!important;
+}
+.smx-dashboard .smx-stat:nth-child(4){
+  background-image:
+    radial-gradient(ellipse at 100% 100%,rgba(215,162,76,.14),transparent 44%),
+    linear-gradient(145deg,rgba(255,255,255,.025),transparent 48%),
+    linear-gradient(145deg,#171611 0%,#0d0e0c 100%)!important;
+}
+
+/* Deposit offer: premium copper glass with a soft diagonal reflection */
+.smx-dashboard .smx-offer{
+  background-color:#11110e!important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%,rgba(229,180,91,.18),transparent 48%),
+    linear-gradient(112deg,rgba(215,162,76,.095),transparent 38%,rgba(255,255,255,.025) 54%,transparent 72%),
+    linear-gradient(145deg,#17150f 0%,#0d0d0b 75%)!important;
+}
+.smx-dashboard .smx-offer::before{
+  background:linear-gradient(135deg,rgba(240,199,121,.26),transparent 68%)!important;
+  border-top:1px solid rgba(240,199,121,.22);
+  border-left:1px solid rgba(240,199,121,.14);
+  border-top-left-radius:12px;
+}
+
+/* Service details: layered satin-black surface, no technical grid */
+.smmxgen-description-theme{
+  background-image:
+    radial-gradient(ellipse at 96% 0%,rgba(215,162,76,.16),transparent 38%),
+    radial-gradient(ellipse at 0% 78%,rgba(255,255,255,.025),transparent 40%),
+    linear-gradient(132deg,transparent 0%,rgba(255,255,255,.018) 31%,transparent 49%),
+    linear-gradient(145deg,#171714 0%,#10110f 46%,#0a0b0a 100%)!important;
+}
+.smmxgen-theme-header{
+  background-color:#12120f!important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.15),transparent 52%),
+    linear-gradient(112deg,rgba(255,255,255,.035),transparent 42%),
+    linear-gradient(145deg,#1a1a16 0%,#10110f 100%)!important;
+}
+.smmxgen-theme-item{
+  background-color:#10110f!important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.075),transparent 54%),
+    linear-gradient(135deg,rgba(255,255,255,.022),transparent 58%)!important;
+}
+.smmxgen-theme-item:hover{
+  background-color:#171610!important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.13),transparent 58%),
+    linear-gradient(135deg,rgba(255,255,255,.035),transparent 60%)!important;
+}
+.smmxgen-warning-section{
+  background-color:#0d0e0c!important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.075),transparent 48%),
+    linear-gradient(145deg,rgba(255,255,255,.018),transparent 48%)!important;
+}
+
+/* Platform selector: soft spotlight and diagonal satin reflection */
+.smx-platform-selector{
+  background-image:
+    radial-gradient(ellipse at 50% 0%,rgba(215,162,76,.16),transparent 54%),
+    radial-gradient(ellipse at 100% 100%,rgba(255,255,255,.025),transparent 42%),
+    linear-gradient(125deg,transparent 0%,rgba(255,255,255,.02) 35%,transparent 56%),
+    linear-gradient(145deg,#171714 0%,#10110f 52%,#0b0c0b 100%)!important;
+}
+.smx-platform-selector .platforms-item__with-icon{
+  background-color:#11120f!important;
+  background-image:linear-gradient(135deg,rgba(255,255,255,.035),transparent 58%),radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.065),transparent 68%)!important;
+}
+.smx-platform-selector .platforms-item__with-icon.active,
+.smx-platform-selector .platforms-item__with-icon.active:hover{
+  background-color:#19160f!important;
+  background-image:radial-gradient(ellipse at 100% 0%,rgba(240,199,121,.17),transparent 65%),linear-gradient(135deg,rgba(215,162,76,.13),rgba(215,162,76,.025))!important;
+}
+.smx-platform-selector .platforms-item__with-icon:hover{
+  background-color:#191a16!important;
+  background-image:linear-gradient(135deg,rgba(255,255,255,.045),transparent 62%),radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.085),transparent 70%)!important;
+}
+
+/* Keep the finish contained to the intended SMMXGEN components */
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smmxgen-description-theme,
+.smx-platform-selector{
+  background-clip:padding-box!important;
+}
+
+
+
+/* ==========================================================
+   SMMXGEN V6 — OBSIDIAN AURORA
+   Premium Artistic Backgrounds — Full CSS Build
+   ========================================================== */
+
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smmxgen-description-theme,
+.smx-platform-selector {
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+    background-color: #0b0c0e !important;
+    border: 1px solid rgba(215,162,76,.22) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 18px 48px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.045) !important;
+}
+
+/* ACCOUNT PANEL — Large orbital artwork */
+.smx-dashboard .smx-account-panel {
+    background-image:
+        radial-gradient(circle at 100% 0%, transparent 0 58px, rgba(215,162,76,.15) 59px 60px, transparent 61px 80px, rgba(215,162,76,.085) 81px 82px, transparent 83px 105px, rgba(215,162,76,.045) 106px 107px, transparent 108px),
+        linear-gradient(125deg, transparent 35%, rgba(215,162,76,.045) 55%, transparent 75%),
+        radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.13), transparent 52%),
+        linear-gradient(145deg, #191914 0%, #0d0e10 58%, #08090b 100%) !important;
+}
+
+/* STAT CARDS — Precision rings */
+.smx-dashboard .smx-stat {
+    background-image:
+        radial-gradient(circle at 100% 0%, transparent 0 27px, rgba(215,162,76,.15) 28px 29px, transparent 30px 44px, rgba(215,162,76,.075) 45px 46px, transparent 47px 62px, rgba(215,162,76,.035) 63px 64px, transparent 65px),
+        radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.095), transparent 53%),
+        linear-gradient(145deg, #191914 0%, #101113 58%, #090a0c 100%) !important;
+    transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease !important;
+}
+
+.smx-dashboard .smx-stat:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(240,199,121,.58) !important;
+    box-shadow: 0 20px 45px rgba(0,0,0,.38), 0 0 22px rgba(215,162,76,.055), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+/* SERVICE DETAILS — Artistic metallic arcs */
+.smmxgen-description-theme {
+    background-image:
+        radial-gradient(circle at 100% 0%, transparent 0 44px, rgba(215,162,76,.14) 45px 46px, transparent 47px 65px, rgba(215,162,76,.075) 66px 67px, transparent 68px 88px, rgba(215,162,76,.04) 89px 90px, transparent 91px),
+        linear-gradient(135deg, transparent 30%, rgba(215,162,76,.035) 50%, transparent 70%),
+        linear-gradient(145deg, #171713, #0b0c0e 78%) !important;
+}
+
+/* SERVICE HEADER — Champagne light */
+.smmxgen-theme-header {
+    background-image:
+        linear-gradient(112deg, rgba(215,162,76,.15), transparent 62%),
+        radial-gradient(circle at 100% 0%, rgba(215,162,76,.09), transparent 52%),
+        linear-gradient(145deg, #1b1a15, #101113) !important;
+    border-bottom-color: rgba(215,162,76,.22) !important;
+}
+
+/* INNER SERVICE TILES — Soft gold illumination */
+.smmxgen-theme-item {
+    background-color: #101113 !important;
+    background-image:
+        radial-gradient(circle at 100% 0%, rgba(215,162,76,.11), transparent 55%),
+        linear-gradient(140deg, rgba(255,255,255,.025), transparent 65%) !important;
+    border-color: rgba(215,162,76,.17) !important;
+    transition: background-color .25s ease, border-color .25s ease, transform .25s ease, box-shadow .25s ease !important;
+}
+
+.smmxgen-theme-item:hover {
+    background-color: #15140f !important;
+    border-color: rgba(240,199,121,.48) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 26px rgba(0,0,0,.26), 0 0 18px rgba(215,162,76,.035) !important;
+}
+
+/* PLATFORM SELECTOR — Cinematic orbital design */
+.smx-platform-selector {
+    background-image:
+        radial-gradient(circle at 100% 0%, transparent 0 38px, rgba(215,162,76,.13) 39px 40px, transparent 41px 58px, rgba(215,162,76,.07) 59px 60px, transparent 61px 80px, rgba(215,162,76,.035) 81px 82px, transparent 83px),
+        radial-gradient(ellipse at 50% 0%, rgba(215,162,76,.12), transparent 66%),
+        linear-gradient(125deg, transparent 35%, rgba(255,255,255,.022) 52%, transparent 70%),
+        linear-gradient(145deg, #191914, #0b0c0e 78%) !important;
+}
+
+/* PLATFORM BUTTONS — Premium metallic finish */
+.smx-platform-selector .platforms-item__with-icon {
+    background-color: #111214 !important;
+    background-image: linear-gradient(135deg, rgba(215,162,76,.085), transparent 72%) !important;
+    border-color: rgba(215,162,76,.18) !important;
+    transition: background-color .22s ease, border-color .22s ease, color .22s ease, box-shadow .22s ease !important;
+}
+
+.smx-platform-selector .platforms-item__with-icon:hover {
+    background-color: #191812 !important;
+    border-color: rgba(240,199,121,.48) !important;
+}
+
+.smx-platform-selector .platforms-item__with-icon.active,
+.smx-platform-selector .platforms-item__with-icon.active:hover {
+    background-color: #1a160e !important;
+    background-image: linear-gradient(135deg, rgba(215,162,76,.21), rgba(215,162,76,.045)) !important;
+    border-color: rgba(240,199,121,.68) !important;
+    box-shadow: inset 0 0 0 1px rgba(215,162,76,.08), 0 0 18px rgba(215,162,76,.065) !important;
+}
+
+/* OFFER PANEL — Luxury gold reflections */
+.smx-dashboard .smx-offer {
+    background-color: #11110e !important;
+    background-image:
+        radial-gradient(circle at 100% 0%, transparent 0 24px, rgba(215,162,76,.12) 25px 26px, transparent 27px 42px, rgba(215,162,76,.055) 43px 44px, transparent 45px),
+        linear-gradient(115deg, rgba(215,162,76,.13), transparent 65%),
+        linear-gradient(145deg, #17150f, #0b0c0e) !important;
+    border-color: rgba(215,162,76,.27) !important;
+}
+
+/* ICON FRAMES — Premium finish */
+.smx-dashboard .smx-stat-icon,
+.smx-dashboard .smx-premium-tag,
+.smx-dashboard .smx-offer-percent,
+.smmxgen-theme-header-icon,
+.smmxgen-theme-icon {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.055), 0 5px 18px rgba(0,0,0,.17) !important;
+}
+
+.smx-dashboard .smx-account-footer {
+    border-top-color: rgba(215,162,76,.19) !important;
+}
+
+/* MOBILE — Preserve layout */
+@media (max-width: 575px) {
+    .smx-dashboard .smx-account-panel,
+    .smx-dashboard .smx-stat,
+    .smmxgen-description-theme,
+    .smx-platform-selector {
+        border-radius: 15px !important;
+    }
+    .smx-dashboard .smx-stat:hover,
+    .smmxgen-theme-item:hover {
+        transform: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smx-dashboard .smx-stat,
+    .smmxgen-theme-item,
+    .smx-platform-selector .platforms-item__with-icon {
+        transition: none !important;
+    }
+}
+
+
+/* ==========================================================
+   SMMXGEN V7 — OBSIDIAN CELESTIAL
+   Unified premium surfaces + refined orbital line artwork
+   Scoped only to SMMXGEN custom components.
+   ========================================================== */
+
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smx-platform-selector,
+.smmxgen-description-theme {
+  position: relative !important;
+  isolation: isolate !important;
+  background-color: #10100e !important;
+  background-image:
+    radial-gradient(circle at 100% 0%,
+      transparent 0 42px,
+      rgba(226,177,91,.20) 43px 44px,
+      transparent 45px 61px,
+      rgba(226,177,91,.11) 62px 63px,
+      transparent 64px 84px,
+      rgba(226,177,91,.055) 85px 86px,
+      transparent 87px 110px),
+    radial-gradient(ellipse at 100% 0%,
+      rgba(215,162,76,.105) 0%,
+      rgba(215,162,76,.035) 24%,
+      transparent 54%),
+    linear-gradient(128deg,
+      rgba(255,255,255,.035) 0%,
+      transparent 30%,
+      transparent 66%,
+      rgba(215,162,76,.025) 100%),
+    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  border: 1px solid rgba(215,162,76,.23) !important;
+  box-shadow:
+    0 14px 36px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.045),
+    inset 0 0 0 1px rgba(215,162,76,.025) !important;
+}
+
+/* Consistent inset outline, with no extra markup */
+.smx-dashboard .smx-account-panel::after,
+.smx-dashboard .smx-stat::after,
+.smx-platform-selector::after,
+.smmxgen-description-theme::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 5px !important;
+  z-index: 0 !important;
+  border: 1px solid rgba(215,162,76,.055) !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.018),transparent 24%),
+    linear-gradient(315deg,rgba(215,162,76,.018),transparent 28%) !important;
+}
+
+/* Keep content above the decorative outline */
+.smx-dashboard .smx-account-panel > *,
+.smx-dashboard .smx-stat > *,
+.smx-platform-selector > *,
+.smmxgen-description-theme > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dashboard stats share the exact same palette; the artwork is
+   slightly smaller so the numbers stay readable. */
+.smx-dashboard .smx-stat {
+  background-image:
+    radial-gradient(circle at 100% 0%,
+      transparent 0 30px,
+      rgba(226,177,91,.18) 31px 32px,
+      transparent 33px 46px,
+      rgba(226,177,91,.095) 47px 48px,
+      transparent 49px 65px),
+    radial-gradient(ellipse at 100% 0%,
+      rgba(215,162,76,.095),
+      transparent 55%),
+    linear-gradient(128deg,
+      rgba(255,255,255,.03),
+      transparent 42%,
+      rgba(215,162,76,.02)),
+    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
+  transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease !important;
+}
+.smx-dashboard .smx-stat:hover {
+  border-color: rgba(235,183,92,.48) !important;
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.32),
+    0 0 22px rgba(215,162,76,.045),
+    inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+
+/* Account overview: larger orbital motif, same charcoal-gold finish */
+.smx-dashboard .smx-account-panel {
+  background-image:
+    radial-gradient(circle at 100% 0%,
+      transparent 0 58px,
+      rgba(226,177,91,.17) 59px 60px,
+      transparent 61px 82px,
+      rgba(226,177,91,.10) 83px 84px,
+      transparent 85px 108px,
+      rgba(226,177,91,.05) 109px 110px,
+      transparent 111px 140px),
+    radial-gradient(ellipse at 100% 0%,
+      rgba(215,162,76,.10),
+      transparent 55%),
+    linear-gradient(128deg,
+      rgba(255,255,255,.035),
+      transparent 36%,
+      rgba(215,162,76,.025)),
+    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
+}
+
+/* Platform selector — unified with dashboard cards */
+.smx-platform-selector {
+  background-image:
+    radial-gradient(circle at 100% 0%,
+      transparent 0 44px,
+      rgba(226,177,91,.18) 45px 46px,
+      transparent 47px 66px,
+      rgba(226,177,91,.10) 67px 68px,
+      transparent 69px 91px,
+      rgba(226,177,91,.05) 92px 93px,
+      transparent 94px 120px),
+    radial-gradient(ellipse at 50% 0%,
+      rgba(215,162,76,.09),
+      transparent 62%),
+    linear-gradient(128deg,
+      rgba(255,255,255,.03),
+      transparent 42%,
+      rgba(215,162,76,.02)),
+    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
+}
+
+/* Service details outer card — same finish and matching artwork */
+.smmxgen-description-theme {
+  background-image:
+    radial-gradient(circle at 100% 0%,
+      transparent 0 42px,
+      rgba(226,177,91,.18) 43px 44px,
+      transparent 45px 61px,
+      rgba(226,177,91,.10) 62px 63px,
+      transparent 64px 84px,
+      rgba(226,177,91,.05) 85px 86px,
+      transparent 87px 110px),
+    radial-gradient(ellipse at 100% 0%,
+      rgba(215,162,76,.10),
+      transparent 54%),
+    linear-gradient(128deg,
+      rgba(255,255,255,.035),
+      transparent 30%,
+      transparent 66%,
+      rgba(215,162,76,.025)),
+    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
+}
+
+/* Inner detail tiles: same palette, slightly elevated surface */
+.smmxgen-theme-header,
+.smmxgen-theme-item {
+  background-color: rgba(24,23,18,.92) !important;
+  background-image:
+    linear-gradient(135deg,rgba(215,162,76,.075),transparent 58%),
+    linear-gradient(145deg,rgba(255,255,255,.018),transparent 72%) !important;
+  border-color: rgba(215,162,76,.19) !important;
+}
+.smmxgen-theme-item:hover {
+  background-color: #201c13 !important;
+  border-color: rgba(235,183,92,.42) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.23), inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+/* Offer banner matches the same visual system */
+.smx-dashboard .smx-offer {
+  background-color: #15140f !important;
+  background-image:
+    radial-gradient(circle at 100% 0%,
+      transparent 0 25px,
+      rgba(226,177,91,.16) 26px 27px,
+      transparent 28px 43px,
+      rgba(226,177,91,.08) 44px 45px,
+      transparent 46px 62px),
+    linear-gradient(115deg,rgba(215,162,76,.11),transparent 62%),
+    linear-gradient(145deg,#191914,#10100e) !important;
+  border-color: rgba(215,162,76,.25) !important;
+}
+
+/* Platform pills remain darker than their parent, but use matching gold */
+.smx-platform-selector .platforms-item__with-icon {
+  background-color: #12120f !important;
+  background-image: linear-gradient(135deg,rgba(215,162,76,.075),transparent 70%) !important;
+  border-color: rgba(215,162,76,.20) !important;
+}
+.smx-platform-selector .platforms-item__with-icon.active,
+.smx-platform-selector .platforms-item__with-icon.active:hover {
+  background-color: #211b10 !important;
+  background-image: linear-gradient(135deg,rgba(215,162,76,.20),rgba(215,162,76,.045)) !important;
+  border-color: rgba(235,183,92,.62) !important;
+}
+
+/* Avoid changing unrelated Perfect Panel cards or the order form */
+@media (max-width: 575px) {
+  .smx-dashboard .smx-account-panel,
+  .smx-dashboard .smx-stat,
+  .smx-platform-selector,
+  .smmxgen-description-theme {
+    border-radius: 15px !important;
+  }
+  .smx-dashboard .smx-account-panel::after,
+  .smx-dashboard .smx-stat::after,
+  .smx-platform-selector::after,
+  .smmxgen-description-theme::after {
+    inset: 4px !important;
+  }
+}
+
+/* ==========================================================
+   SMMXGEN V8 — ONE COHESIVE DESIGN SYSTEM
+   Final override: identical outer-card palette + refined artwork
+   ========================================================== */
+:root {
+  --smx-unified-bg-1: #191813;
+  --smx-unified-bg-2: #121210;
+  --smx-unified-bg-3: #0d0e0f;
+  --smx-unified-gold: #d7a24c;
+  --smx-unified-gold-soft: rgba(215,162,76,.18);
+  --smx-unified-border: rgba(215,162,76,.22);
+}
+
+/* Every SMMXGEN outer card gets the SAME background recipe.
+   Only the artwork scale differs slightly where space requires it. */
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smx-platform-selector,
+.smmxgen-description-theme {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  background-color: var(--smx-unified-bg-3) !important;
+  background-image:
+    radial-gradient(circle at 100% 0%,
+      transparent 0 38px,
+      rgba(215,162,76,.15) 39px 40px,
+      transparent 41px 61px,
+      rgba(215,162,76,.085) 62px 63px,
+      transparent 64px 87px,
+      rgba(215,162,76,.045) 88px 89px,
+      transparent 90px 112px),
+    radial-gradient(ellipse at 0% 0%, rgba(215,162,76,.105), transparent 58%),
+    linear-gradient(128deg, rgba(255,255,255,.032), transparent 42%, rgba(215,162,76,.018)),
+    linear-gradient(145deg, var(--smx-unified-bg-1) 0%, var(--smx-unified-bg-2) 48%, var(--smx-unified-bg-3) 100%) !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  border: 1px solid var(--smx-unified-border) !important;
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.26),
+    inset 0 1px 0 rgba(255,255,255,.045) !important;
+}
+
+/* Same edge language on all main cards */
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smx-platform-selector,
+.smmxgen-description-theme {
+  border-radius: 18px !important;
+}
+
+.smx-dashboard .smx-account-panel::after,
+.smx-dashboard .smx-stat::after,
+.smx-platform-selector::after,
+.smmxgen-description-theme::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 5px !important;
+  z-index: 0 !important;
+  border: 1px solid rgba(215,162,76,.065) !important;
+  border-radius: inherit !important;
+  background: linear-gradient(135deg,rgba(255,255,255,.018),transparent 36%,rgba(215,162,76,.012)) !important;
+  pointer-events: none !important;
+}
+
+.smx-dashboard .smx-account-panel > *,
+.smx-dashboard .smx-stat > *,
+.smx-platform-selector > *,
+.smmxgen-description-theme > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Offer banner follows the same palette without competing with its parent */
+.smx-dashboard .smx-offer {
+  background-color: #15140f !important;
+  background-image:
+    radial-gradient(circle at 100% 0%, transparent 0 25px, rgba(215,162,76,.15) 26px 27px, transparent 28px 46px, rgba(215,162,76,.07) 47px 48px, transparent 49px),
+    linear-gradient(115deg,rgba(215,162,76,.105),transparent 66%),
+    linear-gradient(145deg,#191813,#101110) !important;
+  border-color: rgba(215,162,76,.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+/* Inner service-detail tiles: one matching elevated surface */
+.smmxgen-theme-header,
+.smmxgen-theme-item {
+  background-color: #171713 !important;
+  background-image:
+    radial-gradient(circle at 100% 0%,rgba(215,162,76,.075),transparent 58%),
+    linear-gradient(145deg,rgba(255,255,255,.018),transparent 68%) !important;
+  border: 1px solid rgba(215,162,76,.18) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+.smmxgen-theme-item:hover {
+  background-color: #1c1a14 !important;
+  border-color: rgba(215,162,76,.36) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.03) !important;
+}
+
+/* Platform buttons share one restrained dark-gold finish */
+.smx-platform-selector .platforms-item__with-icon {
+  background-color: #131310 !important;
+  background-image: linear-gradient(135deg,rgba(215,162,76,.075),transparent 72%) !important;
+  border-color: rgba(215,162,76,.20) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.018) !important;
+}
+.smx-platform-selector .platforms-item__with-icon:hover {
+  background-color: #1a1812 !important;
+  background-image: linear-gradient(135deg,rgba(215,162,76,.12),transparent 72%) !important;
+  border-color: rgba(215,162,76,.38) !important;
+}
+.smx-platform-selector .platforms-item__with-icon.active,
+.smx-platform-selector .platforms-item__with-icon.active:hover {
+  background-color: #211b10 !important;
+  background-image: linear-gradient(135deg,rgba(215,162,76,.20),rgba(215,162,76,.045)) !important;
+  border-color: rgba(235,183,92,.62) !important;
+  box-shadow: inset 0 0 0 1px rgba(215,162,76,.07) !important;
+}
+
+/* Hover treatment stays subtle so the cards continue to look like a set */
+.smx-dashboard .smx-stat,
+.smx-dashboard .smx-account-panel,
+.smx-platform-selector,
+.smmxgen-description-theme {
+  transition: border-color .24s ease, box-shadow .24s ease !important;
+}
+.smx-dashboard .smx-stat:hover,
+.smx-dashboard .smx-account-panel:hover,
+.smx-platform-selector:hover,
+.smmxgen-description-theme:hover {
+  border-color: rgba(215,162,76,.34) !important;
+  box-shadow: 0 16px 38px rgba(0,0,0,.29), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+
+@media (max-width: 575px) {
+  .smx-dashboard .smx-account-panel,
+  .smx-dashboard .smx-stat,
+  .smx-platform-selector,
+  .smmxgen-description-theme { border-radius: 15px !important; }
+  .smx-dashboard .smx-account-panel::after,
+  .smx-dashboard .smx-stat::after,
+  .smx-platform-selector::after,
+  .smmxgen-description-theme::after { inset: 4px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smx-dashboard .smx-stat,
+  .smx-dashboard .smx-account-panel,
+  .smx-platform-selector,
+  .smmxgen-description-theme,
+  .smmxgen-theme-item { transition: none !important; }
+}
+
+
+
+/* ==========================================================
+   SMMXGEN V9 — COMPACT SPACING
+   Slightly smaller cards and tighter internal spacing.
+   Keeps the existing unified artwork and colors.
+   ========================================================== */
+.smx-dashboard {
+  padding: 6px 0 !important;
+}
+.smx-dashboard-layout {
+  gap: 12px !important;
+}
+.smx-dashboard .smx-account-panel {
+  min-height: 265px !important;
+  padding: 20px !important;
+  border-radius: 15px !important;
+}
+.smx-dashboard .smx-account-username {
+  font-size: 24px !important;
+  margin-top: 7px !important;
+}
+.smx-dashboard .smx-account-subtitle {
+  margin-top: 5px !important;
+  font-size: 9px !important;
+}
+.smx-dashboard .smx-offer {
+  margin-top: 17px !important;
+  padding: 12px 13px !important;
+  border-radius: 11px !important;
+  gap: 10px !important;
+}
+.smx-dashboard .smx-offer-percent {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+}
+.smx-dashboard .smx-account-footer {
+  margin-top: auto !important;
+  padding-top: 12px !important;
+}
+.smx-dashboard .smx-stat {
+  min-height: 125px !important;
+  padding: 16px !important;
+  border-radius: 15px !important;
+}
+.smx-dashboard .smx-stat-icon {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 10px !important;
+  margin-bottom: 10px !important;
+}
+.smx-dashboard .smx-stat-value {
+  font-size: 21px !important;
+  line-height: 1.2 !important;
+}
+.smx-dashboard .smx-stat-label {
+  margin-top: 5px !important;
+  font-size: 9px !important;
+}
+.smx-platform-selector {
+  margin: 8px 0 10px !important;
+  padding: 12px 14px !important;
+  border-radius: 15px !important;
+}
+.smx-platform-selector__heading {
+  font-size: 14px !important;
+}
+.smx-platform-selector__subtitle {
+  margin: 3px 0 9px !important;
+  font-size: 9px !important;
+}
+.smx-platform-selector .platforms-item__with-icon {
+  min-height: 35px !important;
+  padding: 5px 8px !important;
+  border-radius: 8px !important;
+}
+.smmxgen-description-theme {
+  border-radius: 15px !important;
+}
+.smmxgen-theme-header {
+  padding: 15px 17px !important;
+  gap: 10px !important;
+}
+.smmxgen-theme-header-icon {
+  width: 36px !important;
+  height: 36px !important;
+  flex-basis: 36px !important;
+  border-radius: 10px !important;
+}
+.smmxgen-theme-title {
+  font-size: 13px !important;
+}
+.smmxgen-theme-subtitle {
+  margin-top: 3px !important;
+  font-size: 9px !important;
+}
+.smmxgen-theme-grid {
+  gap: 8px !important;
+  padding: 12px !important;
+}
+.smmxgen-theme-item {
+  min-height: 58px !important;
+  padding: 10px !important;
+  gap: 9px !important;
+  border-radius: 11px !important;
+}
+.smmxgen-theme-icon {
+  width: 34px !important;
+  height: 34px !important;
+  flex-basis: 34px !important;
+  border-radius: 9px !important;
+}
+.smmxgen-theme-label {
+  font-size: 8px !important;
+}
+.smmxgen-theme-value {
+  font-size: 10px !important;
+}
+.smmxgen-warning-section {
+  margin: 0 12px 12px !important;
+  padding: 13px !important;
+  border-radius: 11px !important;
+}
+@media (max-width: 767px) {
+  .smx-dashboard-layout { gap: 10px !important; }
+  .smx-dashboard .smx-account-panel { min-height: 0 !important; padding: 15px !important; }
+  .smx-dashboard .smx-stat { min-height: 105px !important; padding: 12px !important; }
+  .smx-dashboard .smx-stat-value { font-size: 18px !important; }
+  .smx-platform-selector { padding: 10px 8px !important; }
+  .smmxgen-theme-grid { gap: 7px !important; padding: 9px !important; }
+  .smmxgen-theme-item { min-height: 52px !important; padding: 8px !important; }
+}
+
+</style>
