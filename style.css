@@ -1,4 +1,9 @@
 <style>
+/* SMMXGEN CUSTOM CSS — CLEANED & UNIFIED
+   Sidebar + dashboard + service theme.
+   JavaScript is separate and unchanged.
+*/
+
 /* ==========================================
    SMMXGEN SIDEBAR PROFILE
    ========================================== */
@@ -185,256 +190,7 @@ ul.sidebar-block__left-menu {
     padding: 9px 7px !important;
   }
 }
-</style>
 
-<script>
-(() => {
-  'use strict';
-
-  const SIDEBAR =
-    '.component-sidebar.component-sidebar-with-navbar';
-
-  const PROFILE_ID = 'smmxgen-profile-footer-v3';
-
-  const userIcon = `
-    <svg viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="1.7"
-      stroke-linecap="round" stroke-linejoin="round"
-      aria-hidden="true">
-      <circle cx="12" cy="8" r="3.5"/>
-      <path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/>
-    </svg>`;
-
-  const logoutIcon = `
-    <svg viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="1.7"
-      stroke-linecap="round" stroke-linejoin="round"
-      aria-hidden="true">
-      <path d="M10 17l5-5-5-5"/>
-      <path d="M15 12H3"/>
-      <path d="M12 3h6a2 2 0 0 1 2 2v14
-        a2 2 0 0 1-2 2h-6"/>
-    </svg>`;
-
-  function getPath(link) {
-    try {
-      return new URL(link.href, location.origin)
-        .pathname.replace(/\/+$/, '') || '/';
-    } catch {
-      return '';
-    }
-  }
-
-  function validUsername(value) {
-    if (!value) return '';
-
-    const username = value.trim();
-
-    if (
-      !username ||
-      username.length > 80 ||
-      username.includes('{{') ||
-      username.includes('{%') ||
-      username.toLowerCase() === 'guest' ||
-      username.toLowerCase() === 'my account' ||
-      username.toLowerCase() === 'account overview'
-    ) {
-      return '';
-    }
-
-    return username;
-  }
-
-  function getUsername() {
-    /* 1. Try the Account Overview card */
-    const overviewCards = document.querySelectorAll(
-      '.totals-block__card'
-    );
-
-    for (const card of overviewCards) {
-      const value = card.querySelector(
-        '.totals-block__count-value'
-      );
-
-      const username = validUsername(value?.textContent || '');
-
-      if (username) return username;
-    }
-
-    /* 2. Try the Twig-provided username */
-    const twigSource = document.querySelector(
-      '[data-smmxgen-username]'
-    );
-
-    const twigUsername = validUsername(
-      twigSource?.getAttribute('data-smmxgen-username') || ''
-    );
-
-    if (twigUsername) return twigUsername;
-
-    /* 3. Try other existing username elements */
-    const selectors = [
-      '[data-username]',
-      '.sidebar-user-name',
-      '.sidebar-username',
-      '.profile-username',
-      '.user-profile__name',
-      '.user-name',
-      '.username',
-      '.smx-account-username'
-    ];
-
-    for (const selector of selectors) {
-      const element = document.querySelector(selector);
-
-      if (!element || element.closest('#' + PROFILE_ID)) {
-        continue;
-      }
-
-      const username = validUsername(
-        element.getAttribute('data-username') ||
-        element.textContent ||
-        ''
-      );
-
-      if (username) return username;
-    }
-
-    return '';
-  }
-
-  function createProfile() {
-    const footer = document.createElement('div');
-    footer.id = PROFILE_ID;
-
-    footer.innerHTML = `
-      <a class="sx-profile-main" href="/account"
-         aria-label="Open account">
-        <span class="sx-profile-avatar">${userIcon}</span>
-        <span class="sx-profile-info">
-          <span class="sx-profile-name"></span>
-          <span class="sx-profile-label">Account</span>
-        </span>
-      </a>
-
-      <a class="sx-profile-logout" href="/logout"
-         aria-label="Logout" title="Logout">
-        ${logoutIcon}
-      </a>
-    `;
-
-    return footer;
-  }
-
-  function removeOldProfiles() {
-    document.querySelectorAll(
-      '.sx-profile-footer, #smmxgen-sidebar-profile'
-    ).forEach(element => element.remove());
-  }
-
-  function mount() {
-    const sidebar = document.querySelector(SIDEBAR);
-    if (!sidebar) return;
-
-    const menu = sidebar.querySelector(
-      '.component-sidebar__menu'
-    );
-
-    const list = menu?.querySelector(
-      'ul.sidebar-block__left-menu'
-    );
-
-    if (!menu || !list) return;
-
-    let footer = document.getElementById(PROFILE_ID);
-
-    if (!footer) {
-      removeOldProfiles();
-      footer = createProfile();
-    }
-
-    /* Remove original sidebar Account and Logout links */
-    const links = [...list.querySelectorAll('a[href]')];
-
-    const account = links.find(link =>
-      getPath(link) === '/account'
-    );
-
-    const logout = links.find(link =>
-      getPath(link) === '/logout'
-    );
-
-    if (account) {
-      footer.querySelector('.sx-profile-main').href =
-        account.href;
-
-      const item = account.closest('li');
-      if (item) item.remove();
-      else account.remove();
-    }
-
-    if (logout) {
-      footer.querySelector('.sx-profile-logout').href =
-        logout.href;
-
-      const item = logout.closest('li');
-      if (item) item.remove();
-      else logout.remove();
-    }
-
-    /* Update name from the available page source */
-    const username = getUsername();
-
-    footer.querySelector('.sx-profile-name').textContent =
-      username || 'My Account';
-
-    /* Place footer OUTSIDE the UL, at the bottom of the menu */
-    if (
-      footer.parentElement !== menu ||
-      menu.lastElementChild !== footer
-    ) {
-      menu.appendChild(footer);
-    }
-  }
-
-  function init() {
-    mount();
-
-    let scheduled = false;
-
-    const observer = new MutationObserver(() => {
-      if (scheduled) return;
-      scheduled = true;
-
-      requestAnimationFrame(() => {
-        scheduled = false;
-        mount();
-      });
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, {
-      once: true
-    });
-  } else {
-    init();
-  }
-})();
-</script>
-
-
-
-
-
-
-
-<style>
 /* SMMXGEN — CSS ONLY
 Paste this file into the CSS / Custom CSS field.
 Contains component CSS and the V4 warm-charcoal geometric card redesign.
@@ -450,975 +206,552 @@ Contains component CSS and the V4 warm-charcoal geometric card redesign.
 
 .smx-platform-selector{padding-top:16px!important;padding-bottom:20px!important;}.smx-platform-selector__heading{font-size:15px!important;line-height:1.4!important;}.smx-platform-selector__subtitle{font-size:10px!important;line-height:1.5!important;margin:3px 0 12px!important;}.smx-platform-selector .platforms{display:grid!important;grid-template-columns:repeat(auto-fit,108px)!important;justify-content:center!important;justify-items:stretch!important;align-items:center!important;column-gap:8px!important;row-gap:7px!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;margin:0 auto!important;padding:0!important;}.smx-platform-selector .platforms-item,.smx-platform-selector .platforms-item-col-6{display:flex!important;justify-content:stretch!important;align-items:stretch!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:0!important;}.smx-platform-selector .platforms-item__with-icon{display:inline-flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:40px!important;height:auto!important;margin:0!important;padding:7px 6px!important;gap:6px!important;white-space:nowrap!important;box-sizing:border-box!important;}.smx-platform-selector .platforms-item__icon,.smx-platform-selector .platforms-item__icon svg{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;max-width:18px!important;max-height:18px!important;flex:0 0 18px!important;}.smx-platform-selector .platforms-item__title{font-size:11px!important;line-height:1.3!important;white-space:nowrap!important;overflow-wrap:normal!important;}@media(max-width:1200px){.smx-platform-selector .platforms{grid-template-columns:repeat(auto-fit,108px)!important;column-gap:8px!important;}}@media(max-width:767px){.smx-platform-selector{padding:14px 7px 20px!important;}.smx-platform-selector__heading{font-size:15px!important;}.smx-platform-selector__subtitle{font-size:10px!important;margin-bottom:12px!important;}.smx-platform-selector .platforms{grid-template-columns:repeat(auto-fit,108px)!important;justify-content:center!important;column-gap:7px!important;row-gap:6px!important;}.smx-platform-selector .platforms-item__with-icon{min-height:40px!important;padding:7px 5px!important;gap:5px!important;}.smx-platform-selector .platforms-item__title{font-size:10px!important;}}@media(max-width:360px){.smx-platform-selector .platforms{grid-template-columns:repeat(auto-fit,minmax(0,108px))!important;column-gap:7px!important;}}
 
-/* Previous global theme block removed: V5 intentionally styles cards only. */
-
 /* ==========================================================
-   SMMXGEN V5 — OBSIDIAN / SIGNAL
-   Card-only redesign. No page, body, navigation, or site-wide backgrounds.
-   ========================================================== */
-:root{
-  --smx-v5-ink:#11110f;
-  --smx-v5-panel:#151512;
-  --smx-v5-panel-deep:#0d0d0b;
-  --smx-v5-line:rgba(224,169,73,.19);
-  --smx-v5-line-bright:rgba(235,183,92,.56);
-  --smx-v5-copper:#d7a24c;
-  --smx-v5-copper-light:#f0c779;
-  --smx-v5-muted:#aaa59a;
-}
-
-/* Main account card: architectural grid + restrained copper illumination */
-.smx-dashboard .smx-account-panel,
-.smx-dashboard .smx-stat,
-.smmxgen-description-theme,
-.smx-platform-selector{
-  position:relative;
-  isolation:isolate;
-  overflow:hidden;
-  background-color:var(--smx-v5-panel-deep)!important;
-  background-image:
-    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.105),transparent 34%),
-    linear-gradient(135deg,rgba(255,255,255,.018),transparent 40%),
-    repeating-linear-gradient(0deg,transparent 0,transparent 31px,rgba(215,162,76,.035) 32px),
-    repeating-linear-gradient(90deg,transparent 0,transparent 31px,rgba(215,162,76,.035) 32px)!important;
-  border:1px solid rgba(215,162,76,.18)!important;
-  border-radius:18px!important;
-  box-shadow:0 18px 44px rgba(0,0,0,.27),inset 0 1px 0 rgba(255,255,255,.035)!important;
-}
-
-/* Fine technical corner marks and a crisp inner frame */
-.smx-dashboard .smx-account-panel::after,
-.smx-dashboard .smx-stat::after,
-.smmxgen-description-theme::after,
-.smx-platform-selector::after{
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  z-index:0!important;
-  inset:7px!important;
-  border:1px solid rgba(215,162,76,.055)!important;
-  border-radius:12px!important;
-  background:
-    linear-gradient(var(--smx-v5-copper),var(--smx-v5-copper)) left top/22px 1px no-repeat,
-    linear-gradient(var(--smx-v5-copper),var(--smx-v5-copper)) left top/1px 22px no-repeat,
-    linear-gradient(var(--smx-v5-copper),var(--smx-v5-copper)) right bottom/22px 1px no-repeat,
-    linear-gradient(var(--smx-v5-copper),var(--smx-v5-copper)) right bottom/1px 22px no-repeat!important;
-  opacity:.7!important;
-  pointer-events:none!important;
-}
-.smx-dashboard .smx-account-panel>* ,
-.smx-dashboard .smx-stat>* ,
-.smmxgen-description-theme>* ,
-.smx-platform-selector>*{
-  position:relative;
-  z-index:1;
-}
-
-/* Copper rail: less neon, more premium hardware */
-.smx-dashboard .smx-account-panel::before,
-.smx-dashboard .smx-stat::before,
-.smmxgen-description-theme::before{
-  background:linear-gradient(180deg,transparent,var(--smx-v5-copper-light) 20%,var(--smx-v5-copper) 76%,transparent)!important;
-  width:2px!important;
-  opacity:.9!important;
-}
-.smx-dashboard .smx-account-panel,
-.smx-dashboard .smx-stat{border-color:rgba(215,162,76,.19)!important;}
-.smx-dashboard .smx-stat{background-image:
-  radial-gradient(circle at 100% 0%,rgba(215,162,76,.10),transparent 38%),
-  repeating-linear-gradient(0deg,transparent 0,transparent 27px,rgba(215,162,76,.028) 28px),
-  repeating-linear-gradient(90deg,transparent 0,transparent 27px,rgba(215,162,76,.028) 28px),
-  linear-gradient(145deg,#171713 0%,#0e0e0c 70%)!important;
-  transition:border-color .22s ease,transform .22s ease,box-shadow .22s ease!important;
-}
-.smx-dashboard .smx-stat:hover{
-  transform:translateY(-3px)!important;
-  border-color:var(--smx-v5-line-bright)!important;
-  box-shadow:0 20px 48px rgba(0,0,0,.34),0 0 0 1px rgba(215,162,76,.06),inset 0 1px 0 rgba(255,255,255,.04)!important;
-}
-
-/* Accent tiles and typography */
-.smx-dashboard .smx-stat-icon,
-.smx-dashboard .smx-premium-tag,
-.smx-dashboard .smx-offer-percent,
-.smmxgen-theme-header-icon,
-.smmxgen-theme-icon{
-  color:var(--smx-v5-copper-light)!important;
-  background:linear-gradient(145deg,rgba(215,162,76,.13),rgba(215,162,76,.025))!important;
-  border-color:rgba(215,162,76,.28)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 5px 18px rgba(0,0,0,.13)!important;
-}
-.smx-dashboard .smx-stat-value,
-.smx-dashboard .smx-stat-label,
-.smx-dashboard .smx-account-username,
-.smmxgen-theme-title{ text-shadow:0 1px 0 rgba(0,0,0,.3); }
-.smx-dashboard .smx-stat-value{color:#f5f1e8!important;}
-.smx-dashboard .smx-stat-label,.smx-dashboard .smx-account-subtitle{color:var(--smx-v5-muted)!important;}
-.smx-dashboard .smx-premium-tag,.smx-dashboard .smx-offer-heading{color:var(--smx-v5-copper-light)!important;}
-.smx-dashboard .smx-offer{
-  background-image:linear-gradient(115deg,rgba(215,162,76,.095),transparent 58%),repeating-linear-gradient(135deg,rgba(215,162,76,.025) 0,rgba(215,162,76,.025) 1px,transparent 1px,transparent 9px)!important;
-  background-color:#11110e!important;
-  border-color:rgba(215,162,76,.23)!important;
-}
-.smx-dashboard .smx-account-footer{border-top-color:rgba(215,162,76,.14)!important;}
-
-/* Service-description cards: premium technical panel, not a flat black box */
-.smmxgen-description-theme{
-  background-image:
-    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.09),transparent 35%),
-    repeating-linear-gradient(0deg,transparent 0,transparent 35px,rgba(215,162,76,.027) 36px),
-    repeating-linear-gradient(90deg,transparent 0,transparent 35px,rgba(215,162,76,.027) 36px),
-    linear-gradient(145deg,#151512,#0b0b09)!important;
-}
-.smmxgen-theme-header{
-  background-image:linear-gradient(110deg,rgba(215,162,76,.10),transparent 66%),linear-gradient(145deg,#1a1915,#10100e)!important;
-  border-bottom-color:rgba(215,162,76,.16)!important;
-}
-.smmxgen-theme-item{
-  background-image:linear-gradient(135deg,rgba(215,162,76,.045),transparent 65%)!important;
-  background-color:#10100e!important;
-  border-color:rgba(215,162,76,.14)!important;
-}
-.smmxgen-theme-item:hover{
-  background-color:#191710!important;
-  border-color:rgba(235,183,92,.45)!important;
-  box-shadow:0 10px 25px rgba(0,0,0,.23),inset 0 0 0 1px rgba(215,162,76,.035)!important;
-}
-.smmxgen-theme-icon img{filter:brightness(0) saturate(100%) invert(74%) sepia(32%) saturate(630%) hue-rotate(354deg) brightness(96%) contrast(91%)!important;}
-
-/* Platform selector: each platform is a compact technical chip */
-.smx-platform-selector{
-  background-image:radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.075),transparent 42%),repeating-linear-gradient(0deg,transparent 0,transparent 34px,rgba(215,162,76,.026) 35px),repeating-linear-gradient(90deg,transparent 0,transparent 34px,rgba(215,162,76,.026) 35px),linear-gradient(145deg,#151512,#0c0c0a)!important;
-}
-.smx-platform-selector .platforms-item__with-icon{
-  background-image:linear-gradient(145deg,rgba(215,162,76,.055),transparent)!important;
-  background-color:#11110f!important;
-  color:#c9c2b5!important;
-  border-color:rgba(215,162,76,.16)!important;
-}
-.smx-platform-selector .platforms-item__icon{color:var(--smx-v5-copper-light)!important;}
-.smx-platform-selector .platforms-item__with-icon.active,
-.smx-platform-selector .platforms-item__with-icon.active:hover{
-  color:var(--smx-v5-copper-light)!important;
-  background-image:linear-gradient(145deg,rgba(215,162,76,.18),rgba(215,162,76,.055))!important;
-  background-color:#17140e!important;
-  border-color:rgba(235,183,92,.62)!important;
-  box-shadow:inset 0 0 0 1px rgba(215,162,76,.08),0 0 16px rgba(215,162,76,.045)!important;
-}
-.smx-platform-selector .platforms-item__with-icon:hover{
-  background-color:#191812!important;
-  border-color:rgba(215,162,76,.38)!important;
-}
-
-/* Intentionally no generic .card / .panel / .well styling here.
-   Unrelated Perfect Panel cards and the New Order form keep their native theme. */
-@media(max-width:575px){
-  .smx-dashboard .smx-account-panel,.smx-dashboard .smx-stat,.smmxgen-description-theme,.smx-platform-selector{border-radius:15px!important;}
-  .smx-dashboard .smx-account-panel::after,.smx-dashboard .smx-stat::after,.smmxgen-description-theme::after,.smx-platform-selector::after{inset:5px!important;border-radius:10px!important;}
-}
-
-
-
-/* ==========================================================
-   SMMXGEN V6 — OBSIDIAN AURORA / ARTISTIC METAL FINISH
-   Replaces repeated grid patterns with layered light, depth,
-   soft brushed-metal sweeps and restrained copper reflections.
-   Scoped only to the SMMXGEN components; no global card styling.
-   ========================================================== */
-.smx-dashboard .smx-account-panel,
-.smx-dashboard .smx-stat,
-.smmxgen-description-theme,
-.smx-platform-selector{
-  background-color:#0c0d0c!important;
-  background-image:
-    radial-gradient(ellipse at 88% 8%,rgba(226,177,91,.15) 0%,rgba(226,177,91,.045) 22%,transparent 49%),
-    radial-gradient(ellipse at 8% 100%,rgba(110,91,58,.12) 0%,transparent 42%),
-    linear-gradient(122deg,transparent 0%,rgba(255,255,255,.018) 22%,transparent 39%),
-    linear-gradient(148deg,#171714 0%,#10110f 42%,#090a09 76%,#11100d 100%)!important;
-  background-repeat:no-repeat!important;
-  background-size:cover!important;
-}
-
-/* A quiet copper sheen instead of the old square grid */
-.smx-dashboard .smx-account-panel::after,
-.smx-dashboard .smx-stat::after,
-.smmxgen-description-theme::after,
-.smx-platform-selector::after{
-  background:
-    linear-gradient(118deg,transparent 0%,rgba(240,199,121,.11) 48%,transparent 70%) top right/100% 1px no-repeat,
-    linear-gradient(180deg,rgba(240,199,121,.30),rgba(215,162,76,.04)) left top/1px 34px no-repeat,
-    linear-gradient(270deg,rgba(240,199,121,.22),transparent) right bottom/38px 1px no-repeat,
-    linear-gradient(0deg,rgba(240,199,121,.12),transparent) right bottom/1px 28px no-repeat!important;
-  border-color:rgba(215,162,76,.075)!important;
-  opacity:.8!important;
-}
-
-/* Individual stat cards: each gets a soft off-center light pool */
-.smx-dashboard .smx-stat{
-  background-image:
-    radial-gradient(ellipse at 92% 4%,rgba(230,181,94,.15),transparent 38%),
-    radial-gradient(ellipse at 0% 100%,rgba(255,255,255,.025),transparent 48%),
-    linear-gradient(145deg,#171815 0%,#10110f 48%,#0b0c0b 100%)!important;
-}
-.smx-dashboard .smx-stat:nth-child(2){
-  background-image:
-    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.17),transparent 42%),
-    linear-gradient(155deg,rgba(255,255,255,.022),transparent 42%),
-    linear-gradient(145deg,#171611 0%,#10100d 55%,#0a0b0a 100%)!important;
-}
-.smx-dashboard .smx-stat:nth-child(3){
-  background-image:
-    radial-gradient(ellipse at 0% 0%,rgba(215,162,76,.12),transparent 42%),
-    linear-gradient(125deg,transparent 34%,rgba(255,255,255,.018) 52%,transparent 70%),
-    linear-gradient(145deg,#151613 0%,#0d0e0c 100%)!important;
-}
-.smx-dashboard .smx-stat:nth-child(4){
-  background-image:
-    radial-gradient(ellipse at 100% 100%,rgba(215,162,76,.14),transparent 44%),
-    linear-gradient(145deg,rgba(255,255,255,.025),transparent 48%),
-    linear-gradient(145deg,#171611 0%,#0d0e0c 100%)!important;
-}
-
-/* Deposit offer: premium copper glass with a soft diagonal reflection */
-.smx-dashboard .smx-offer{
-  background-color:#11110e!important;
-  background-image:
-    radial-gradient(ellipse at 100% 0%,rgba(229,180,91,.18),transparent 48%),
-    linear-gradient(112deg,rgba(215,162,76,.095),transparent 38%,rgba(255,255,255,.025) 54%,transparent 72%),
-    linear-gradient(145deg,#17150f 0%,#0d0d0b 75%)!important;
-}
-.smx-dashboard .smx-offer::before{
-  background:linear-gradient(135deg,rgba(240,199,121,.26),transparent 68%)!important;
-  border-top:1px solid rgba(240,199,121,.22);
-  border-left:1px solid rgba(240,199,121,.14);
-  border-top-left-radius:12px;
-}
-
-/* Service details: layered satin-black surface, no technical grid */
-.smmxgen-description-theme{
-  background-image:
-    radial-gradient(ellipse at 96% 0%,rgba(215,162,76,.16),transparent 38%),
-    radial-gradient(ellipse at 0% 78%,rgba(255,255,255,.025),transparent 40%),
-    linear-gradient(132deg,transparent 0%,rgba(255,255,255,.018) 31%,transparent 49%),
-    linear-gradient(145deg,#171714 0%,#10110f 46%,#0a0b0a 100%)!important;
-}
-.smmxgen-theme-header{
-  background-color:#12120f!important;
-  background-image:
-    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.15),transparent 52%),
-    linear-gradient(112deg,rgba(255,255,255,.035),transparent 42%),
-    linear-gradient(145deg,#1a1a16 0%,#10110f 100%)!important;
-}
-.smmxgen-theme-item{
-  background-color:#10110f!important;
-  background-image:
-    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.075),transparent 54%),
-    linear-gradient(135deg,rgba(255,255,255,.022),transparent 58%)!important;
-}
-.smmxgen-theme-item:hover{
-  background-color:#171610!important;
-  background-image:
-    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.13),transparent 58%),
-    linear-gradient(135deg,rgba(255,255,255,.035),transparent 60%)!important;
-}
-.smmxgen-warning-section{
-  background-color:#0d0e0c!important;
-  background-image:
-    radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.075),transparent 48%),
-    linear-gradient(145deg,rgba(255,255,255,.018),transparent 48%)!important;
-}
-
-/* Platform selector: soft spotlight and diagonal satin reflection */
-.smx-platform-selector{
-  background-image:
-    radial-gradient(ellipse at 50% 0%,rgba(215,162,76,.16),transparent 54%),
-    radial-gradient(ellipse at 100% 100%,rgba(255,255,255,.025),transparent 42%),
-    linear-gradient(125deg,transparent 0%,rgba(255,255,255,.02) 35%,transparent 56%),
-    linear-gradient(145deg,#171714 0%,#10110f 52%,#0b0c0b 100%)!important;
-}
-.smx-platform-selector .platforms-item__with-icon{
-  background-color:#11120f!important;
-  background-image:linear-gradient(135deg,rgba(255,255,255,.035),transparent 58%),radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.065),transparent 68%)!important;
-}
-.smx-platform-selector .platforms-item__with-icon.active,
-.smx-platform-selector .platforms-item__with-icon.active:hover{
-  background-color:#19160f!important;
-  background-image:radial-gradient(ellipse at 100% 0%,rgba(240,199,121,.17),transparent 65%),linear-gradient(135deg,rgba(215,162,76,.13),rgba(215,162,76,.025))!important;
-}
-.smx-platform-selector .platforms-item__with-icon:hover{
-  background-color:#191a16!important;
-  background-image:linear-gradient(135deg,rgba(255,255,255,.045),transparent 62%),radial-gradient(ellipse at 100% 0%,rgba(215,162,76,.085),transparent 70%)!important;
-}
-
-/* Keep the finish contained to the intended SMMXGEN components */
-.smx-dashboard .smx-account-panel,
-.smx-dashboard .smx-stat,
-.smmxgen-description-theme,
-.smx-platform-selector{
-  background-clip:padding-box!important;
-}
-
-
-
-/* ==========================================================
-   SMMXGEN V6 — OBSIDIAN AURORA
-   Premium Artistic Backgrounds — Full CSS Build
+   SMMXGEN — UNIFIED OBSIDIAN GOLD THEME
+   Clean background system: no grid / square patterns.
+   Scoped to SMMXGEN components only.
    ========================================================== */
 
+:root {
+  --smx-v5-ink: #0b0c0e;
+  --smx-v5-panel: #121210;
+  --smx-v5-panel-deep: #0b0c0e;
+  --smx-v5-line: rgba(215,162,76,.22);
+  --smx-v5-line-bright: rgba(235,183,92,.48);
+  --smx-v5-copper: #d7a24c;
+  --smx-v5-copper-light: #f0c779;
+  --smx-v5-muted: #aaa59a;
+}
+
+/* Same base finish and unified palette for all main cards */
 .smx-dashboard .smx-account-panel,
 .smx-dashboard .smx-stat,
 .smmxgen-description-theme,
 .smx-platform-selector {
-    position: relative !important;
-    isolation: isolate !important;
-    overflow: hidden !important;
-    background-color: #0b0c0e !important;
-    border: 1px solid rgba(215,162,76,.22) !important;
-    border-radius: 18px !important;
-    box-shadow: 0 18px 48px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.045) !important;
-}
-
-/* ACCOUNT PANEL — Large orbital artwork */
-.smx-dashboard .smx-account-panel {
-    background-image:
-        radial-gradient(circle at 100% 0%, transparent 0 58px, rgba(215,162,76,.15) 59px 60px, transparent 61px 80px, rgba(215,162,76,.085) 81px 82px, transparent 83px 105px, rgba(215,162,76,.045) 106px 107px, transparent 108px),
-        linear-gradient(125deg, transparent 35%, rgba(215,162,76,.045) 55%, transparent 75%),
-        radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.13), transparent 52%),
-        linear-gradient(145deg, #191914 0%, #0d0e10 58%, #08090b 100%) !important;
-}
-
-/* STAT CARDS — Precision rings */
-.smx-dashboard .smx-stat {
-    background-image:
-        radial-gradient(circle at 100% 0%, transparent 0 27px, rgba(215,162,76,.15) 28px 29px, transparent 30px 44px, rgba(215,162,76,.075) 45px 46px, transparent 47px 62px, rgba(215,162,76,.035) 63px 64px, transparent 65px),
-        radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.095), transparent 53%),
-        linear-gradient(145deg, #191914 0%, #101113 58%, #090a0c 100%) !important;
-    transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease !important;
-}
-
-.smx-dashboard .smx-stat:hover {
-    transform: translateY(-3px) !important;
-    border-color: rgba(240,199,121,.58) !important;
-    box-shadow: 0 20px 45px rgba(0,0,0,.38), 0 0 22px rgba(215,162,76,.055), inset 0 1px 0 rgba(255,255,255,.06) !important;
-}
-
-/* SERVICE DETAILS — Artistic metallic arcs */
-.smmxgen-description-theme {
-    background-image:
-        radial-gradient(circle at 100% 0%, transparent 0 44px, rgba(215,162,76,.14) 45px 46px, transparent 47px 65px, rgba(215,162,76,.075) 66px 67px, transparent 68px 88px, rgba(215,162,76,.04) 89px 90px, transparent 91px),
-        linear-gradient(135deg, transparent 30%, rgba(215,162,76,.035) 50%, transparent 70%),
-        linear-gradient(145deg, #171713, #0b0c0e 78%) !important;
-}
-
-/* SERVICE HEADER — Champagne light */
-.smmxgen-theme-header {
-    background-image:
-        linear-gradient(112deg, rgba(215,162,76,.15), transparent 62%),
-        radial-gradient(circle at 100% 0%, rgba(215,162,76,.09), transparent 52%),
-        linear-gradient(145deg, #1b1a15, #101113) !important;
-    border-bottom-color: rgba(215,162,76,.22) !important;
-}
-
-/* INNER SERVICE TILES — Soft gold illumination */
-.smmxgen-theme-item {
-    background-color: #101113 !important;
-    background-image:
-        radial-gradient(circle at 100% 0%, rgba(215,162,76,.11), transparent 55%),
-        linear-gradient(140deg, rgba(255,255,255,.025), transparent 65%) !important;
-    border-color: rgba(215,162,76,.17) !important;
-    transition: background-color .25s ease, border-color .25s ease, transform .25s ease, box-shadow .25s ease !important;
-}
-
-.smmxgen-theme-item:hover {
-    background-color: #15140f !important;
-    border-color: rgba(240,199,121,.48) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 10px 26px rgba(0,0,0,.26), 0 0 18px rgba(215,162,76,.035) !important;
-}
-
-/* PLATFORM SELECTOR — Cinematic orbital design */
-.smx-platform-selector {
-    background-image:
-        radial-gradient(circle at 100% 0%, transparent 0 38px, rgba(215,162,76,.13) 39px 40px, transparent 41px 58px, rgba(215,162,76,.07) 59px 60px, transparent 61px 80px, rgba(215,162,76,.035) 81px 82px, transparent 83px),
-        radial-gradient(ellipse at 50% 0%, rgba(215,162,76,.12), transparent 66%),
-        linear-gradient(125deg, transparent 35%, rgba(255,255,255,.022) 52%, transparent 70%),
-        linear-gradient(145deg, #191914, #0b0c0e 78%) !important;
-}
-
-/* PLATFORM BUTTONS — Premium metallic finish */
-.smx-platform-selector .platforms-item__with-icon {
-    background-color: #111214 !important;
-    background-image: linear-gradient(135deg, rgba(215,162,76,.085), transparent 72%) !important;
-    border-color: rgba(215,162,76,.18) !important;
-    transition: background-color .22s ease, border-color .22s ease, color .22s ease, box-shadow .22s ease !important;
-}
-
-.smx-platform-selector .platforms-item__with-icon:hover {
-    background-color: #191812 !important;
-    border-color: rgba(240,199,121,.48) !important;
-}
-
-.smx-platform-selector .platforms-item__with-icon.active,
-.smx-platform-selector .platforms-item__with-icon.active:hover {
-    background-color: #1a160e !important;
-    background-image: linear-gradient(135deg, rgba(215,162,76,.21), rgba(215,162,76,.045)) !important;
-    border-color: rgba(240,199,121,.68) !important;
-    box-shadow: inset 0 0 0 1px rgba(215,162,76,.08), 0 0 18px rgba(215,162,76,.065) !important;
-}
-
-/* OFFER PANEL — Luxury gold reflections */
-.smx-dashboard .smx-offer {
-    background-color: #11110e !important;
-    background-image:
-        radial-gradient(circle at 100% 0%, transparent 0 24px, rgba(215,162,76,.12) 25px 26px, transparent 27px 42px, rgba(215,162,76,.055) 43px 44px, transparent 45px),
-        linear-gradient(115deg, rgba(215,162,76,.13), transparent 65%),
-        linear-gradient(145deg, #17150f, #0b0c0e) !important;
-    border-color: rgba(215,162,76,.27) !important;
-}
-
-/* ICON FRAMES — Premium finish */
-.smx-dashboard .smx-stat-icon,
-.smx-dashboard .smx-premium-tag,
-.smx-dashboard .smx-offer-percent,
-.smmxgen-theme-header-icon,
-.smmxgen-theme-icon {
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.055), 0 5px 18px rgba(0,0,0,.17) !important;
-}
-
-.smx-dashboard .smx-account-footer {
-    border-top-color: rgba(215,162,76,.19) !important;
-}
-
-/* MOBILE — Preserve layout */
-@media (max-width: 575px) {
-    .smx-dashboard .smx-account-panel,
-    .smx-dashboard .smx-stat,
-    .smmxgen-description-theme,
-    .smx-platform-selector {
-        border-radius: 15px !important;
-    }
-    .smx-dashboard .smx-stat:hover,
-    .smmxgen-theme-item:hover {
-        transform: none !important;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .smx-dashboard .smx-stat,
-    .smmxgen-theme-item,
-    .smx-platform-selector .platforms-item__with-icon {
-        transition: none !important;
-    }
-}
-
-
-/* ==========================================================
-   SMMXGEN V7 — OBSIDIAN CELESTIAL
-   Unified premium surfaces + refined orbital line artwork
-   Scoped only to SMMXGEN custom components.
-   ========================================================== */
-
-.smx-dashboard .smx-account-panel,
-.smx-dashboard .smx-stat,
-.smx-platform-selector,
-.smmxgen-description-theme {
-  position: relative !important;
-  isolation: isolate !important;
-  background-color: #10100e !important;
+  background-color: #0d0e10 !important;
   background-image:
-    radial-gradient(circle at 100% 0%,
-      transparent 0 42px,
-      rgba(226,177,91,.20) 43px 44px,
-      transparent 45px 61px,
-      rgba(226,177,91,.11) 62px 63px,
-      transparent 64px 84px,
-      rgba(226,177,91,.055) 85px 86px,
-      transparent 87px 110px),
-    radial-gradient(ellipse at 100% 0%,
-      rgba(215,162,76,.105) 0%,
-      rgba(215,162,76,.035) 24%,
-      transparent 54%),
-    linear-gradient(128deg,
-      rgba(255,255,255,.035) 0%,
-      transparent 30%,
-      transparent 66%,
-      rgba(215,162,76,.025) 100%),
-    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
+    radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.105), transparent 46%),
+    radial-gradient(ellipse at 0% 100%, rgba(215,162,76,.035), transparent 42%),
+    linear-gradient(145deg, #171713 0%, #101113 48%, #0b0c0e 100%) !important;
   background-repeat: no-repeat !important;
   background-size: cover !important;
-  border: 1px solid rgba(215,162,76,.23) !important;
+  border: 1px solid rgba(215,162,76,.22) !important;
+  border-radius: 16px !important;
   box-shadow:
-    0 14px 36px rgba(0,0,0,.25),
-    inset 0 1px 0 rgba(255,255,255,.045),
-    inset 0 0 0 1px rgba(215,162,76,.025) !important;
+    0 14px 36px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.035) !important;
 }
 
-/* Consistent inset outline, with no extra markup */
+/* Premium geometric corner artwork — replaces decorative circles and grid */
 .smx-dashboard .smx-account-panel::after,
 .smx-dashboard .smx-stat::after,
-.smx-platform-selector::after,
-.smmxgen-description-theme::after {
+.smmxgen-description-theme::after,
+.smx-platform-selector::after {
   content: "" !important;
   display: block !important;
   position: absolute !important;
-  inset: 5px !important;
   z-index: 0 !important;
-  border: 1px solid rgba(215,162,76,.055) !important;
-  border-radius: inherit !important;
+  inset: 7px !important;
   pointer-events: none !important;
+  border: 1px solid rgba(215,162,76,.055) !important;
+  border-radius: 11px !important;
   background:
-    linear-gradient(135deg,rgba(255,255,255,.018),transparent 24%),
-    linear-gradient(315deg,rgba(215,162,76,.018),transparent 28%) !important;
+    linear-gradient(135deg, transparent 0 72%, rgba(215,162,76,.075) 72.2%, transparent 72.8%) top right / 128px 92px no-repeat,
+    linear-gradient(135deg, transparent 0 82%, rgba(240,199,121,.055) 82.2%, transparent 82.8%) top right / 164px 118px no-repeat,
+    linear-gradient(225deg, transparent 0 83%, rgba(215,162,76,.045) 83.2%, transparent 83.8%) bottom left / 108px 72px no-repeat,
+    linear-gradient(90deg, rgba(215,162,76,.20), rgba(215,162,76,0)) top right / 44px 1px no-repeat,
+    linear-gradient(180deg, rgba(215,162,76,.18), rgba(215,162,76,0)) top right / 1px 38px no-repeat !important;
+  opacity: .9 !important;
 }
 
-/* Keep content above the decorative outline */
+/* Keep content above the decorative layer */
 .smx-dashboard .smx-account-panel > *,
 .smx-dashboard .smx-stat > *,
-.smx-platform-selector > *,
-.smmxgen-description-theme > * {
+.smmxgen-description-theme > *,
+.smx-platform-selector > * {
   position: relative;
   z-index: 1;
 }
 
-/* Dashboard stats share the exact same palette; the artwork is
-   slightly smaller so the numbers stay readable. */
+/* Stat cards share the same surface; only size and hover differ */
 .smx-dashboard .smx-stat {
-  background-image:
-    radial-gradient(circle at 100% 0%,
-      transparent 0 30px,
-      rgba(226,177,91,.18) 31px 32px,
-      transparent 33px 46px,
-      rgba(226,177,91,.095) 47px 48px,
-      transparent 49px 65px),
-    radial-gradient(ellipse at 100% 0%,
-      rgba(215,162,76,.095),
-      transparent 55%),
-    linear-gradient(128deg,
-      rgba(255,255,255,.03),
-      transparent 42%,
-      rgba(215,162,76,.02)),
-    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
-  transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease !important;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease !important;
 }
 .smx-dashboard .smx-stat:hover {
-  border-color: rgba(235,183,92,.48) !important;
+  transform: translateY(-2px) !important;
+  border-color: rgba(240,199,121,.48) !important;
   box-shadow:
-    0 18px 40px rgba(0,0,0,.32),
-    0 0 22px rgba(215,162,76,.045),
-    inset 0 1px 0 rgba(255,255,255,.055) !important;
-}
-
-/* Account overview: larger orbital motif, same charcoal-gold finish */
-.smx-dashboard .smx-account-panel {
-  background-image:
-    radial-gradient(circle at 100% 0%,
-      transparent 0 58px,
-      rgba(226,177,91,.17) 59px 60px,
-      transparent 61px 82px,
-      rgba(226,177,91,.10) 83px 84px,
-      transparent 85px 108px,
-      rgba(226,177,91,.05) 109px 110px,
-      transparent 111px 140px),
-    radial-gradient(ellipse at 100% 0%,
-      rgba(215,162,76,.10),
-      transparent 55%),
-    linear-gradient(128deg,
-      rgba(255,255,255,.035),
-      transparent 36%,
-      rgba(215,162,76,.025)),
-    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
-}
-
-/* Platform selector — unified with dashboard cards */
-.smx-platform-selector {
-  background-image:
-    radial-gradient(circle at 100% 0%,
-      transparent 0 44px,
-      rgba(226,177,91,.18) 45px 46px,
-      transparent 47px 66px,
-      rgba(226,177,91,.10) 67px 68px,
-      transparent 69px 91px,
-      rgba(226,177,91,.05) 92px 93px,
-      transparent 94px 120px),
-    radial-gradient(ellipse at 50% 0%,
-      rgba(215,162,76,.09),
-      transparent 62%),
-    linear-gradient(128deg,
-      rgba(255,255,255,.03),
-      transparent 42%,
-      rgba(215,162,76,.02)),
-    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
-}
-
-/* Service details outer card — same finish and matching artwork */
-.smmxgen-description-theme {
-  background-image:
-    radial-gradient(circle at 100% 0%,
-      transparent 0 42px,
-      rgba(226,177,91,.18) 43px 44px,
-      transparent 45px 61px,
-      rgba(226,177,91,.10) 62px 63px,
-      transparent 64px 84px,
-      rgba(226,177,91,.05) 85px 86px,
-      transparent 87px 110px),
-    radial-gradient(ellipse at 100% 0%,
-      rgba(215,162,76,.10),
-      transparent 54%),
-    linear-gradient(128deg,
-      rgba(255,255,255,.035),
-      transparent 30%,
-      transparent 66%,
-      rgba(215,162,76,.025)),
-    linear-gradient(145deg,#191914 0%,#11110f 48%,#0b0c0d 100%) !important;
-}
-
-/* Inner detail tiles: same palette, slightly elevated surface */
-.smmxgen-theme-header,
-.smmxgen-theme-item {
-  background-color: rgba(24,23,18,.92) !important;
-  background-image:
-    linear-gradient(135deg,rgba(215,162,76,.075),transparent 58%),
-    linear-gradient(145deg,rgba(255,255,255,.018),transparent 72%) !important;
-  border-color: rgba(215,162,76,.19) !important;
-}
-.smmxgen-theme-item:hover {
-  background-color: #201c13 !important;
-  border-color: rgba(235,183,92,.42) !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,.23), inset 0 1px 0 rgba(255,255,255,.035) !important;
-}
-
-/* Offer banner matches the same visual system */
-.smx-dashboard .smx-offer {
-  background-color: #15140f !important;
-  background-image:
-    radial-gradient(circle at 100% 0%,
-      transparent 0 25px,
-      rgba(226,177,91,.16) 26px 27px,
-      transparent 28px 43px,
-      rgba(226,177,91,.08) 44px 45px,
-      transparent 46px 62px),
-    linear-gradient(115deg,rgba(215,162,76,.11),transparent 62%),
-    linear-gradient(145deg,#191914,#10100e) !important;
-  border-color: rgba(215,162,76,.25) !important;
-}
-
-/* Platform pills remain darker than their parent, but use matching gold */
-.smx-platform-selector .platforms-item__with-icon {
-  background-color: #12120f !important;
-  background-image: linear-gradient(135deg,rgba(215,162,76,.075),transparent 70%) !important;
-  border-color: rgba(215,162,76,.20) !important;
-}
-.smx-platform-selector .platforms-item__with-icon.active,
-.smx-platform-selector .platforms-item__with-icon.active:hover {
-  background-color: #211b10 !important;
-  background-image: linear-gradient(135deg,rgba(215,162,76,.20),rgba(215,162,76,.045)) !important;
-  border-color: rgba(235,183,92,.62) !important;
-}
-
-/* Avoid changing unrelated Perfect Panel cards or the order form */
-@media (max-width: 575px) {
-  .smx-dashboard .smx-account-panel,
-  .smx-dashboard .smx-stat,
-  .smx-platform-selector,
-  .smmxgen-description-theme {
-    border-radius: 15px !important;
-  }
-  .smx-dashboard .smx-account-panel::after,
-  .smx-dashboard .smx-stat::after,
-  .smx-platform-selector::after,
-  .smmxgen-description-theme::after {
-    inset: 4px !important;
-  }
-}
-
-/* ==========================================================
-   SMMXGEN V8 — ONE COHESIVE DESIGN SYSTEM
-   Final override: identical outer-card palette + refined artwork
-   ========================================================== */
-:root {
-  --smx-unified-bg-1: #191813;
-  --smx-unified-bg-2: #121210;
-  --smx-unified-bg-3: #0d0e0f;
-  --smx-unified-gold: #d7a24c;
-  --smx-unified-gold-soft: rgba(215,162,76,.18);
-  --smx-unified-border: rgba(215,162,76,.22);
-}
-
-/* Every SMMXGEN outer card gets the SAME background recipe.
-   Only the artwork scale differs slightly where space requires it. */
-.smx-dashboard .smx-account-panel,
-.smx-dashboard .smx-stat,
-.smx-platform-selector,
-.smmxgen-description-theme {
-  position: relative !important;
-  isolation: isolate !important;
-  overflow: hidden !important;
-  background-color: var(--smx-unified-bg-3) !important;
-  background-image:
-    radial-gradient(circle at 100% 0%,
-      transparent 0 38px,
-      rgba(215,162,76,.15) 39px 40px,
-      transparent 41px 61px,
-      rgba(215,162,76,.085) 62px 63px,
-      transparent 64px 87px,
-      rgba(215,162,76,.045) 88px 89px,
-      transparent 90px 112px),
-    radial-gradient(ellipse at 0% 0%, rgba(215,162,76,.105), transparent 58%),
-    linear-gradient(128deg, rgba(255,255,255,.032), transparent 42%, rgba(215,162,76,.018)),
-    linear-gradient(145deg, var(--smx-unified-bg-1) 0%, var(--smx-unified-bg-2) 48%, var(--smx-unified-bg-3) 100%) !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
-  border: 1px solid var(--smx-unified-border) !important;
-  box-shadow:
-    0 14px 34px rgba(0,0,0,.26),
+    0 18px 42px rgba(0,0,0,.34),
+    0 0 20px rgba(215,162,76,.04),
     inset 0 1px 0 rgba(255,255,255,.045) !important;
 }
 
-/* Same edge language on all main cards */
-.smx-dashboard .smx-account-panel,
-.smx-dashboard .smx-stat,
-.smx-platform-selector,
-.smmxgen-description-theme {
-  border-radius: 18px !important;
+/* Shared gold accents */
+.smx-dashboard .smx-stat-icon,
+.smx-dashboard .smx-premium-tag,
+.smx-dashboard .smx-offer-percent,
+.smmxgen-theme-header-icon,
+.smmxgen-theme-icon {
+  color: #f0c779 !important;
+  border-color: rgba(215,162,76,.25) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 5px 18px rgba(0,0,0,.13) !important;
 }
 
-.smx-dashboard .smx-account-panel::after,
-.smx-dashboard .smx-stat::after,
-.smx-platform-selector::after,
+.smx-dashboard .smx-stat-value { color: #f5f1e8 !important; }
+.smx-dashboard .smx-stat-label,
+.smx-dashboard .smx-account-subtitle { color: #aaa59a !important; }
+.smx-dashboard .smx-premium-tag,
+.smx-dashboard .smx-offer-heading { color: #f0c779 !important; }
+
+/* Offer panel: same palette, slightly brighter gold emphasis */
+.smx-dashboard .smx-offer {
+  background-color: #11110f !important;
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(215,162,76,.11), transparent 58%),
+    linear-gradient(145deg, #17150f, #0d0e10 78%) !important;
+  border-color: rgba(215,162,76,.24) !important;
+}
+
+/* Service details header and inner tiles */
+.smmxgen-theme-header {
+  background-color: #141411 !important;
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(215,162,76,.10), transparent 60%),
+    linear-gradient(145deg, #191914, #101113) !important;
+  border-bottom-color: rgba(215,162,76,.19) !important;
+}
+
+.smmxgen-theme-item,
+.smmxgen-warning-section {
+  background-color: #101113 !important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.055), transparent 58%),
+    linear-gradient(145deg, #131411, #0d0e10) !important;
+  border-color: rgba(215,162,76,.17) !important;
+}
+
+.smmxgen-theme-item:hover {
+  background-color: #171610 !important;
+  border-color: rgba(240,199,121,.42) !important;
+  box-shadow: 0 9px 24px rgba(0,0,0,.24) !important;
+}
+
+/* Platform chips use the same black/gold language */
+.smx-platform-selector .platforms-item__with-icon {
+  background-color: #111214 !important;
+  background-image: linear-gradient(145deg, rgba(215,162,76,.055), transparent 75%) !important;
+  color: #c9c2b5 !important;
+  border-color: rgba(215,162,76,.17) !important;
+}
+
+.smx-platform-selector .platforms-item__with-icon.active,
+.smx-platform-selector .platforms-item__with-icon.active:hover {
+  color: #f0c779 !important;
+  background-color: #19160f !important;
+  background-image: linear-gradient(145deg, rgba(215,162,76,.16), rgba(215,162,76,.035)) !important;
+  border-color: rgba(240,199,121,.58) !important;
+  box-shadow: inset 0 0 0 1px rgba(215,162,76,.06) !important;
+}
+
+.smx-platform-selector .platforms-item__with-icon:hover {
+  background-color: #191812 !important;
+  border-color: rgba(215,162,76,.38) !important;
+}
+
+/* Remove legacy grid artwork from the targeted cards */
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smmxgen-description-theme,
+.smx-platform-selector,
+.smx-dashboard .smx-offer,
+.smmxgen-theme-header,
+.smmxgen-theme-item,
+.smmxgen-warning-section {
+  background-repeat: no-repeat !important;
+}
+
+/* Compact, consistent mobile corners */
+@media (max-width: 575px) {
+  .smx-dashboard .smx-account-panel,
+  .smx-dashboard .smx-stat,
+  .smmxgen-description-theme,
+  .smx-platform-selector {
+    border-radius: 14px !important;
+  }
+}
+
+
+/* ==========================================================
+   SMMXGEN V12 — COPPER ACCENT PLACEMENT
+   Account card: top accent | Overview stats: left accent
+   Platform selector: top accent | Description: refined top accent
+   Scoped only to SMMXGEN components; account/logout JS preserved.
+   ========================================================== */
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smmxgen-description-theme,
+.smx-platform-selector {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+/* LEFT ACCOUNT OVERVIEW CARD — copper line across the top */
+.smx-dashboard .smx-account-panel::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 18px !important;
+  right: 18px !important;
+  top: 0 !important;
+  bottom: auto !important;
+  width: auto !important;
+  height: 2px !important;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--smx-v5-copper-light, #f0c779) 20%,
+    var(--smx-v5-copper, #d7a24c) 76%,
+    transparent 100%
+  ) !important;
+  opacity: .95 !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+/* RIGHT ACCOUNT OVERVIEW STAT TILES — copper line on the left */
+.smx-dashboard .smx-stat::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: auto !important;
+  top: 18px !important;
+  bottom: 18px !important;
+  width: 2px !important;
+  height: auto !important;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--smx-v5-copper-light, #f0c779) 20%,
+    var(--smx-v5-copper, #d7a24c) 76%,
+    transparent 100%
+  ) !important;
+  opacity: .9 !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+/* PLATFORM SELECTOR — matching copper line across the top */
+.smx-platform-selector::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 18px !important;
+  right: 18px !important;
+  top: 0 !important;
+  bottom: auto !important;
+  width: auto !important;
+  height: 2px !important;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--smx-v5-copper-light, #f0c779) 20%,
+    var(--smx-v5-copper, #d7a24c) 76%,
+    transparent 100%
+  ) !important;
+  opacity: .95 !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+/* SERVICE DESCRIPTION — subtle top accent, softened to suit the larger content card */
+.smmxgen-description-theme::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 22px !important;
+  right: 22px !important;
+  top: 0 !important;
+  bottom: auto !important;
+  width: auto !important;
+  height: 2px !important;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(240, 199, 121, .72) 18%,
+    var(--smx-v5-copper, #d7a24c) 50%,
+    rgba(240, 199, 121, .72) 82%,
+    transparent 100%
+  ) !important;
+  opacity: .82 !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+}
+
+@media (max-width: 575px) {
+  .smx-dashboard .smx-account-panel::before,
+  .smx-platform-selector::before { left: 14px !important; right: 14px !important; }
+  .smmxgen-description-theme::before { left: 16px !important; right: 16px !important; }
+}
+
+
+/* ==========================================================
+   SMMXGEN V19 — UNIFIED OBSIDIAN / COPPER / SIGNATURE GEOMETRY
+   Original abstract metal-cut motif: layered blades, chamfered
+   corners and fine copper traces. No X, circles or grid pattern.
+   Keeps the agreed copper rails and the original account/logout JS.
+   ========================================================== */
+
+/* Main Account Overview: a bold architectural cut in the upper-right */
+.smx-dashboard .smx-account-panel::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  width: min(42%, 300px) !important;
+  height: 154px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  opacity: .92 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(135deg, transparent 0 57%, rgba(215,162,76,.05) 57.3% 57.8%, transparent 58.2%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 66%, rgba(240,199,121,.62) 66.3% 66.8%, transparent 67.2%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 73%, rgba(215,162,76,.28) 73.3% 73.8%, transparent 74.2%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 80%, rgba(215,162,76,.17) 80.3% 80.8%, transparent 81.2%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 84%, rgba(255,255,255,.12) 84.3% 84.6%, transparent 85%) top right / 100% 100% no-repeat !important;
+  clip-path: polygon(37% 0,100% 0,100% 100%,72% 100%,100% 0,86% 0,59% 46%,50% 46%,78% 0,66% 0,38% 46%,28% 46%,56% 0);
+}
+
+/* Stat tiles: small three-blade metallic signature, behind content */
+.smx-dashboard .smx-stat::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 102px !important;
+  height: 86px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  opacity: .75 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(135deg, transparent 0 60%, rgba(240,199,121,.55) 60.5% 61.2%, transparent 61.8%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 70%, rgba(215,162,76,.32) 70.5% 71.2%, transparent 71.8%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 80%, rgba(215,162,76,.20) 80.5% 81.2%, transparent 81.8%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 88%, rgba(255,255,255,.10) 88.5% 89%, transparent 89.5%) top right / 100% 100% no-repeat !important;
+  clip-path: polygon(55% 0,100% 0,100% 100%,88% 100%,100% 0,87% 0,66% 39%,55% 39%,77% 0,67% 0,46% 39%,35% 39%);
+}
+
+/* Platform selector: precision-cut rails in both upper corners */
+.smx-platform-selector::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: auto !important;
+  left: 0 !important;
+  height: 92px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  opacity: .68 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(135deg, transparent 0 82%, rgba(215,162,76,.26) 82.4% 82.9%, transparent 83.3%) top right / 155px 92px no-repeat,
+    linear-gradient(135deg, transparent 0 74%, rgba(240,199,121,.48) 74.4% 74.9%, transparent 75.3%) top right / 130px 92px no-repeat,
+    linear-gradient(135deg, transparent 0 66%, rgba(215,162,76,.19) 66.4% 66.9%, transparent 67.3%) top right / 105px 92px no-repeat,
+    linear-gradient(45deg, transparent 0 82%, rgba(215,162,76,.22) 82.4% 82.9%, transparent 83.3%) top left / 155px 92px no-repeat,
+    linear-gradient(45deg, transparent 0 74%, rgba(240,199,121,.38) 74.4% 74.9%, transparent 75.3%) top left / 130px 92px no-repeat !important;
+}
+
+/* Service description: quieter micro-engraving near the header edge */
 .smmxgen-description-theme::after {
   content: "" !important;
   display: block !important;
   position: absolute !important;
-  inset: 5px !important;
-  z-index: 0 !important;
-  border: 1px solid rgba(215,162,76,.065) !important;
-  border-radius: inherit !important;
-  background: linear-gradient(135deg,rgba(255,255,255,.018),transparent 36%,rgba(215,162,76,.012)) !important;
+  z-index: 1 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 128px !important;
+  height: 72px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  opacity: .42 !important;
   pointer-events: none !important;
+  background:
+    linear-gradient(135deg, transparent 0 68%, rgba(240,199,121,.42) 68.5% 69%, transparent 69.5%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 78%, rgba(215,162,76,.28) 78.5% 79%, transparent 79.5%) top right / 100% 100% no-repeat,
+    linear-gradient(135deg, transparent 0 88%, rgba(215,162,76,.17) 88.5% 89%, transparent 89.5%) top right / 100% 100% no-repeat !important;
+  clip-path: polygon(54% 0,100% 0,100% 100%,89% 100%,100% 0,85% 0,62% 40%,51% 40%,75% 0,63% 0,40% 40%,29% 40%);
 }
 
+/* Keep all live text, icons and buttons above the decorative layers */
+.smx-dashboard .smx-account-panel > *,
+.smx-dashboard .smx-stat > *,
+.smmxgen-description-theme > *,
+.smx-platform-selector > * {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 575px) {
+  .smx-dashboard .smx-account-panel::after {
+    width: 40% !important;
+    height: 112px !important;
+    opacity: .68 !important;
+  }
+  .smx-dashboard .smx-stat::after {
+    width: 76px !important;
+    height: 66px !important;
+    opacity: .55 !important;
+  }
+  .smx-platform-selector::after {
+    height: 62px !important;
+    opacity: .48 !important;
+  }
+  .smmxgen-description-theme::after {
+    width: 90px !important;
+    height: 54px !important;
+    opacity: .30 !important;
+  }
+}
+
+
+/* ==========================================================
+   SMMXGEN V19 — UNIFIED OBSIDIAN / COPPER FINISH
+   Scoped visual unification for dashboard, platform selector,
+   service details and New Order area. No JS behavior changed.
+   ========================================================== */
+:root {
+  --smx-v5-ink: #0c0d0e;
+  --smx-v5-panel: #131415;
+  --smx-v5-panel-deep: #0b0c0d;
+  --smx-v5-line: rgba(215,162,76,.20);
+  --smx-v5-line-bright: rgba(240,199,121,.48);
+  --smx-v5-copper: #d7a24c;
+  --smx-v5-copper-light: #f0c779;
+  --smx-v5-muted: #a9a397;
+}
+
+/* One shared material language for custom SMMXGEN panels */
+.smx-dashboard .smx-account-panel,
+.smx-dashboard .smx-stat,
+.smx-platform-selector,
+.smmxgen-description-theme {
+  background-color: #0d0e0f !important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.075), transparent 42%),
+    linear-gradient(135deg, rgba(255,255,255,.025), transparent 44%),
+    linear-gradient(145deg, #151617 0%, #0d0e0f 58%, #0a0b0c 100%) !important;
+  border-color: rgba(215,162,76,.22) !important;
+  box-shadow: 0 15px 38px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+/* Same visual treatment for the order form's outer surfaces only */
+.new-order__form,
+.new-order__content,
+.new-order__content-wrapper,
+.new-order__main,
+.new-order__sidebar,
+.new-order__card,
+.new-order__container {
+  background-color: #0d0e0f !important;
+  background-image:
+    radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.045), transparent 48%),
+    linear-gradient(145deg, #141516 0%, #0b0c0d 72%) !important;
+  border-color: rgba(215,162,76,.19) !important;
+  box-shadow: 0 15px 38px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+/* Keep the form fields legible and functional; only unify appearance */
+.new-order__form input:not([type="checkbox"]):not([type="radio"]),
+.new-order__form select,
+.new-order__form textarea,
+.new-order__content input:not([type="checkbox"]):not([type="radio"]),
+.new-order__content select,
+.new-order__content textarea {
+  color: #f0eee8 !important;
+  background: #171819 !important;
+  border: 1px solid #303033 !important;
+  border-radius: 8px !important;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.20) !important;
+}
+.new-order__form input:focus,
+.new-order__form select:focus,
+.new-order__form textarea:focus,
+.new-order__content input:focus,
+.new-order__content select:focus,
+.new-order__content textarea:focus {
+  border-color: rgba(215,162,76,.62) !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 3px rgba(215,162,76,.09) !important;
+}
+
+/* Service details header, tiles and warning panel use one surface palette */
+.smmxgen-theme-header,
+.smmxgen-theme-item,
+.smmxgen-warning-section {
+  background-color: #121314 !important;
+  background-image: linear-gradient(145deg, rgba(255,255,255,.025), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(215,162,76,.055), transparent 68%) !important;
+  border-color: rgba(215,162,76,.17) !important;
+}
+.smmxgen-theme-item:hover {
+  background-color: #171717 !important;
+  border-color: rgba(215,162,76,.38) !important;
+}
+
+/* X-free signature engraving: restrained chamfered lines, same copper */
+.smx-dashboard .smx-account-panel::after {
+  background:
+    linear-gradient(135deg, transparent 0 68%, rgba(240,199,121,.46) 68.4% 68.8%, transparent 69.2%),
+    linear-gradient(135deg, transparent 0 76%, rgba(215,162,76,.27) 76.4% 76.8%, transparent 77.2%),
+    linear-gradient(135deg, transparent 0 84%, rgba(215,162,76,.16) 84.4% 84.8%, transparent 85.2%) !important;
+  clip-path: none !important;
+  opacity: .68 !important;
+}
+.smx-dashboard .smx-stat::after {
+  background:
+    linear-gradient(135deg, transparent 0 69%, rgba(240,199,121,.42) 69.4% 69.9%, transparent 70.3%),
+    linear-gradient(135deg, transparent 0 80%, rgba(215,162,76,.24) 80.4% 80.9%, transparent 81.3%),
+    linear-gradient(135deg, transparent 0 90%, rgba(215,162,76,.14) 90.4% 90.9%, transparent 91.3%) !important;
+  clip-path: none !important;
+  opacity: .55 !important;
+}
+.smx-platform-selector::after {
+  opacity: .48 !important;
+}
+.smmxgen-description-theme::after {
+  opacity: .30 !important;
+}
+
+/* Ensure text and controls stay above decorative lines */
 .smx-dashboard .smx-account-panel > *,
 .smx-dashboard .smx-stat > *,
 .smx-platform-selector > *,
 .smmxgen-description-theme > * {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* Offer banner follows the same palette without competing with its parent */
-.smx-dashboard .smx-offer {
-  background-color: #15140f !important;
-  background-image:
-    radial-gradient(circle at 100% 0%, transparent 0 25px, rgba(215,162,76,.15) 26px 27px, transparent 28px 46px, rgba(215,162,76,.07) 47px 48px, transparent 49px),
-    linear-gradient(115deg,rgba(215,162,76,.105),transparent 66%),
-    linear-gradient(145deg,#191813,#101110) !important;
-  border-color: rgba(215,162,76,.22) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
-}
-
-/* Inner service-detail tiles: one matching elevated surface */
-.smmxgen-theme-header,
-.smmxgen-theme-item {
-  background-color: #171713 !important;
-  background-image:
-    radial-gradient(circle at 100% 0%,rgba(215,162,76,.075),transparent 58%),
-    linear-gradient(145deg,rgba(255,255,255,.018),transparent 68%) !important;
-  border: 1px solid rgba(215,162,76,.18) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
-}
-.smmxgen-theme-item:hover {
-  background-color: #1c1a14 !important;
-  border-color: rgba(215,162,76,.36) !important;
-  box-shadow: 0 8px 20px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.03) !important;
-}
-
-/* Platform buttons share one restrained dark-gold finish */
-.smx-platform-selector .platforms-item__with-icon {
-  background-color: #131310 !important;
-  background-image: linear-gradient(135deg,rgba(215,162,76,.075),transparent 72%) !important;
-  border-color: rgba(215,162,76,.20) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.018) !important;
-}
-.smx-platform-selector .platforms-item__with-icon:hover {
-  background-color: #1a1812 !important;
-  background-image: linear-gradient(135deg,rgba(215,162,76,.12),transparent 72%) !important;
-  border-color: rgba(215,162,76,.38) !important;
-}
-.smx-platform-selector .platforms-item__with-icon.active,
-.smx-platform-selector .platforms-item__with-icon.active:hover {
-  background-color: #211b10 !important;
-  background-image: linear-gradient(135deg,rgba(215,162,76,.20),rgba(215,162,76,.045)) !important;
-  border-color: rgba(235,183,92,.62) !important;
-  box-shadow: inset 0 0 0 1px rgba(215,162,76,.07) !important;
-}
-
-/* Hover treatment stays subtle so the cards continue to look like a set */
-.smx-dashboard .smx-stat,
-.smx-dashboard .smx-account-panel,
-.smx-platform-selector,
-.smmxgen-description-theme {
-  transition: border-color .24s ease, box-shadow .24s ease !important;
-}
-.smx-dashboard .smx-stat:hover,
-.smx-dashboard .smx-account-panel:hover,
-.smx-platform-selector:hover,
-.smmxgen-description-theme:hover {
-  border-color: rgba(215,162,76,.34) !important;
-  box-shadow: 0 16px 38px rgba(0,0,0,.29), inset 0 1px 0 rgba(255,255,255,.05) !important;
-}
-
-@media (max-width: 575px) {
-  .smx-dashboard .smx-account-panel,
-  .smx-dashboard .smx-stat,
-  .smx-platform-selector,
-  .smmxgen-description-theme { border-radius: 15px !important; }
-  .smx-dashboard .smx-account-panel::after,
-  .smx-dashboard .smx-stat::after,
-  .smx-platform-selector::after,
-  .smmxgen-description-theme::after { inset: 4px !important; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .smx-dashboard .smx-stat,
-  .smx-dashboard .smx-account-panel,
-  .smx-platform-selector,
-  .smmxgen-description-theme,
-  .smmxgen-theme-item { transition: none !important; }
-}
-
-
-
-/* ==========================================================
-   SMMXGEN V9 — COMPACT SPACING
-   Slightly smaller cards and tighter internal spacing.
-   Keeps the existing unified artwork and colors.
-   ========================================================== */
-.smx-dashboard {
-  padding: 6px 0 !important;
-}
-.smx-dashboard-layout {
-  gap: 12px !important;
-}
-.smx-dashboard .smx-account-panel {
-  min-height: 265px !important;
-  padding: 20px !important;
-  border-radius: 15px !important;
-}
-.smx-dashboard .smx-account-username {
-  font-size: 24px !important;
-  margin-top: 7px !important;
-}
-.smx-dashboard .smx-account-subtitle {
-  margin-top: 5px !important;
-  font-size: 9px !important;
-}
-.smx-dashboard .smx-offer {
-  margin-top: 17px !important;
-  padding: 12px 13px !important;
-  border-radius: 11px !important;
-  gap: 10px !important;
-}
-.smx-dashboard .smx-offer-percent {
-  width: 42px !important;
-  height: 42px !important;
-  min-width: 42px !important;
-}
-.smx-dashboard .smx-account-footer {
-  margin-top: auto !important;
-  padding-top: 12px !important;
-}
-.smx-dashboard .smx-stat {
-  min-height: 125px !important;
-  padding: 16px !important;
-  border-radius: 15px !important;
-}
-.smx-dashboard .smx-stat-icon {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  border-radius: 10px !important;
-  margin-bottom: 10px !important;
-}
-.smx-dashboard .smx-stat-value {
-  font-size: 21px !important;
-  line-height: 1.2 !important;
-}
-.smx-dashboard .smx-stat-label {
-  margin-top: 5px !important;
-  font-size: 9px !important;
-}
-.smx-platform-selector {
-  margin: 8px 0 10px !important;
-  padding: 12px 14px !important;
-  border-radius: 15px !important;
-}
-.smx-platform-selector__heading {
-  font-size: 14px !important;
-}
-.smx-platform-selector__subtitle {
-  margin: 3px 0 9px !important;
-  font-size: 9px !important;
-}
-.smx-platform-selector .platforms-item__with-icon {
-  min-height: 35px !important;
-  padding: 5px 8px !important;
-  border-radius: 8px !important;
-}
-.smmxgen-description-theme {
-  border-radius: 15px !important;
-}
-.smmxgen-theme-header {
-  padding: 15px 17px !important;
-  gap: 10px !important;
-}
-.smmxgen-theme-header-icon {
-  width: 36px !important;
-  height: 36px !important;
-  flex-basis: 36px !important;
-  border-radius: 10px !important;
-}
-.smmxgen-theme-title {
-  font-size: 13px !important;
-}
-.smmxgen-theme-subtitle {
-  margin-top: 3px !important;
-  font-size: 9px !important;
-}
-.smmxgen-theme-grid {
-  gap: 8px !important;
-  padding: 12px !important;
-}
-.smmxgen-theme-item {
-  min-height: 58px !important;
-  padding: 10px !important;
-  gap: 9px !important;
-  border-radius: 11px !important;
-}
-.smmxgen-theme-icon {
-  width: 34px !important;
-  height: 34px !important;
-  flex-basis: 34px !important;
-  border-radius: 9px !important;
-}
-.smmxgen-theme-label {
-  font-size: 8px !important;
-}
-.smmxgen-theme-value {
-  font-size: 10px !important;
-}
-.smmxgen-warning-section {
-  margin: 0 12px 12px !important;
-  padding: 13px !important;
-  border-radius: 11px !important;
-}
 @media (max-width: 767px) {
-  .smx-dashboard-layout { gap: 10px !important; }
-  .smx-dashboard .smx-account-panel { min-height: 0 !important; padding: 15px !important; }
-  .smx-dashboard .smx-stat { min-height: 105px !important; padding: 12px !important; }
-  .smx-dashboard .smx-stat-value { font-size: 18px !important; }
-  .smx-platform-selector { padding: 10px 8px !important; }
-  .smmxgen-theme-grid { gap: 7px !important; padding: 9px !important; }
-  .smmxgen-theme-item { min-height: 52px !important; padding: 8px !important; }
+  .new-order__form,
+  .new-order__content,
+  .new-order__content-wrapper,
+  .new-order__main,
+  .new-order__sidebar,
+  .new-order__card,
+  .new-order__container {
+    border-radius: 14px !important;
+  }
 }
 
 </style>
